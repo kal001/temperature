@@ -502,6 +502,8 @@ def main():
     if records:
         show_graph()
         show_stats(option)
+    else:
+        print "<strong>" + _("Nao ha dados nas datas seleccionadas!") + "</strong>"
 
     print "</body>"
     print "</html>"
