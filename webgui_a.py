@@ -456,7 +456,7 @@ def get_option():
 # This is where the program starts
 def main():
     # ToDo Criar forma de editar BD de sensores
-    # ToDo Criar função termostato
+    # ToDo Criar função termostato com mais que um piso
 
     cgitb.enable()
 
