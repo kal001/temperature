@@ -105,7 +105,8 @@ def printHTMLHead(title, records, minimo, maximo, sens):
     print title
     print "</title>"
 
-    print_graph_script(records, minimo, maximo, sens)
+    if records:
+        print_graph_script(records, minimo, maximo, sens)
 
     print "</head>"
 
@@ -117,8 +118,6 @@ def printHTMLHead(title, records, minimo, maximo, sens):
 # function is the select part of the query to perform
 # output defines whether all records that match the criteria should be returned, or only one as a float, or only one
 def get_data(interval, function, output):
-    # todo impedir erro quando não há dados
-
     conn = sqlite3.connect(dbname)
     curs = conn.cursor()
     query = "SELECT %s FROM temps" % function
@@ -145,15 +144,24 @@ def get_data(interval, function, output):
     if output == "oneasfloat":
         rows = curs.fetchone()
         conn.close()
-        return float(rows[0])
-    elif output == "one":
+        if not rows[0]:
+            return None
+        else:
+            return float(rows[0])
+    elif output == "one[0]":
         rows = curs.fetchone()
         conn.close()
-        return rows
+        if not rows:
+            return None
+        else:
+            return rows
     else:
         rows = curs.fetchall()
         conn.close()
-        return rows
+        if not rows:
+            return None
+        else:
+            return rows
 
 
 # Returns list of available sensors on the selected interval, as a table with ID,name
@@ -469,7 +477,11 @@ def main():
     # get data from the database
     records = get_data(option, "*", "all")
     minimo = get_data(option, "min(temp)", "oneasfloat")
+    if not minimo:
+        minimo = 0
     maximo = get_data(option, "max(temp)", "oneasfloat")
+    if not maximo:
+        maximo = 0
     sensores = get_sensors(option)
 
     # print the HTTP header
@@ -487,8 +499,10 @@ def main():
     print_time_selector(option)
     print "<hr>"
 
-    show_graph()
-    show_stats(option)
+    if records:
+        show_graph()
+        show_stats(option)
+
     print "</body>"
     print "</html>"
 
