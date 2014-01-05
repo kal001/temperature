@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
 import sqlite3
-import serial
-import requests
 import threading
 from time import time, sleep, gmtime, strftime
+
+import serial
+import requests
+
 
 # global variables
 

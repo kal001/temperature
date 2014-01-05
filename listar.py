@@ -2,11 +2,6 @@
 
 import sqlite3
 
-import os
-import time
-import glob
-import random
-
 # global variables
 dbname='/var/www/templog.db'
 
