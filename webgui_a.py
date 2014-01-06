@@ -38,16 +38,16 @@ defaults = {
 dictsensores = {}
 
 # print the HTTP header
-def printHTTPheader():
+def printhttpheader():
     print "Content-type: text/html\n\n"
     print '<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">'
 
 
 # print the HTML head section
 # arguments are the page title and the table for the chart
-def printHTMLHead(title, records, minimo, maximo, sens):
-    s1=""
-    s2=""
+def printhtmlhead(title, records, minimo, maximo, sens):
+    s1 = ""
+    s2 = ""
     if lang == "pt":
         s1 = 'selected="selected"'
     if lang == "en":
@@ -100,7 +100,7 @@ def printHTMLHead(title, records, minimo, maximo, sens):
       </select>
     </div>
     </form>
-    """ % (os.path.basename(sys.argv[0]), s1,s2)
+    """ % (os.path.basename(sys.argv[0]), s1, s2)
     print "<title>"
     print title
     print "</title>"
@@ -123,21 +123,21 @@ def get_data(interval, function, output):
     query = "SELECT %s FROM temps" % function
 
     # Create query limited to the sensors to show
-    if defaults['sensoresaver'] != []:
-        st = ''
+    st = ''
+    if defaults['sensoresaver']:
         for sens in defaults['sensoresaver']:
             st += "'{0}',".format(sens)
         st = st[:-1]
 
-    if interval != None:
+    if interval is not None:
         if interval == "6" or interval == "12" or interval == "24":
             query += " WHERE timestamp>datetime('now','-%s hours')" % interval
         else:
             datas = interval.split('|')
             query += " WHERE (timestamp>='%s') AND (timestamp<='%s 23:59:59')" % (datas[0], datas[1])
-        if defaults['sensoresaver'] != []:
+        if defaults['sensoresaver']:
             query += " AND id in ({0})".format(st)
-    elif defaults['sensoresaver'] != []:
+    elif defaults['sensoresaver']:
         query += " WHERE id in ({0})".format(st)
 
     curs.execute(query)
@@ -173,7 +173,7 @@ def get_sensors(interval):
     curs = conn.cursor()
     query = "SELECT DISTINCT sensors.id, sensors.name FROM sensors,temps"
 
-    if interval == None:
+    if interval is None:
         query += " WHERE sensors.id=temps.id"
     elif interval == "6" or interval == "12" or interval == "24":
         query += " WHERE (sensors.id=temps.id) AND (temps.timestamp>datetime('now','-%s hours'))" % interval
@@ -219,7 +219,7 @@ def print_graph_script(records, minimo, maximo, sens):
         rowstr = "data.addRow([new Date('{0}'), ".format(str(row[0]).replace(' ', 'T'))
 
         for sensor in sens[:]:
-            if (str(row[2]) == str(sensor[0])):
+            if str(row[2]) == str(sensor[0]):
                 rowstr += "{0},".format(str(round(row[1], 1)))
 
                 if row[1] == minimo and umsominimo:
@@ -291,8 +291,8 @@ def show_stats(option):
     print _(
         "<tr><td><strong>Data/Hora</strong></td><td><strong>Temperatura&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</strong></td><td><strong>Local</strong></td></tr>")
 
-    conn=sqlite3.connect(dbname)
-    curs=conn.cursor()
+    conn = sqlite3.connect(dbname)
+    curs = conn.cursor()
     rows = curs.execute("SELECT * FROM temps WHERE timestamp>datetime('now','-1 hour') ORDER BY timestamp DESC")
 
     for row in rows:
@@ -437,7 +437,7 @@ def get_option():
         if "timeinterval" in form:
             option = form["timeinterval"].value
             defaults['periodo'] = option
-            return (option)
+            return option
         else:
             defaults['periodo'] = '24'
             return None
@@ -486,16 +486,16 @@ def main():
     sensores = get_sensors(option)
 
     # print the HTTP header
-    printHTTPheader()
+    printhttpheader()
     # start printing the page
     print '<html lang="%s">' % lang
     # print the head section including the table
     # used by the javascript for the chart
-    printHTMLHead(_("Temperatura ambiente"), records, minimo, maximo, sensores)
+    printhtmlhead(_("Temperatura ambiente"), records, minimo, maximo, sensores)
 
     # print the page body
     print "<body>"
-    print "<h1>"+ _("Temperatura ambiente em Casa vs ") + "%s</h1>" % APPVERSION
+    print "<h1>" + _("Temperatura ambiente em Casa vs ") + "%s</h1>" % APPVERSION
 
     print_time_selector(option)
     print "<hr>"
@@ -510,6 +510,7 @@ def main():
     print "</html>"
 
     sys.stdout.flush()
+
 
 if __name__ == "__main__":
     main()
