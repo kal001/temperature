@@ -10,7 +10,7 @@ import os
 import i18n
 
 # global variables
-APPVERSION = "0.50"
+APPVERSION = "0.51"
 dbname = '/var/www/templog.db'
 
 form = cgi.FieldStorage()
@@ -466,7 +466,7 @@ def main():
     # ToDo Criar forma de editar BD de sensores
     # ToDo Criar função termostato com mais que um piso
     # ToDo fazer sintema vcs com git
-    
+
     cgitb.enable()
 
     # get options that may have been passed to this script
