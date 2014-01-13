@@ -4,25 +4,23 @@ from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 
 
-# create our little application :)
+# create application
 app = Flask(__name__)
 
-# Load default config and override config from an environment variable
+# Load default config and override config from a local file
 app.config.update(dict(
-    DATABASE='/Users/fernandolourenco/Dados/Projectos/Raspberry Pi/Projectos/Pbx/Temperatura/templog.db',
+    DATABASE='/Users/FernandoLourenco/Dropbox/Raspberry Pi/temperatura/templog.db',
     DEBUG=True,
     SECRET_KEY='development key',
     APPVERSION = '0.51'
 ))
-app.config.from_envvar('FLASKR_SETTINGS', silent=True)
-
+app.config.from_pyfile('settings.cfg', silent=True)
 
 def connect_db():
     """Connects to the specific database."""
     rv = sqlite3.connect(app.config['DATABASE'])
     rv.row_factory = sqlite3.Row
     return rv
-
 
 def init_db():
     """Creates the database tables."""
