@@ -1,0 +1,38 @@
+a--TEMP-----
+a--TMPA19.08
+a--DEVTYPE--
+a--DEVNAME--
+a--HELLO----
+a--APVER----
+a--SER------
+a--FVER-----
+a--INTVLxxxx
+a--CYCLE----
+a--WAKE-----
+a--SRESxxxxx
+
+aAACYCLE----
+
+Generic commands
+·         APVER - LLAP version
+·         DEVTYPE - Device type
+·         DEVNAME - Device name
+·         HELLO - Hello (PING)
+·         SER - Serial number
+·         FVER - Firmware version
+·         CHDEVID - Change device ID
+·         PANID - Change PANID
+·         REBOOT - Restart the device
+·         INTVLxxxx - Sets the interval for reading the temperature - 999S would be 999 seconds - T=ms, S=secs, M=mins, H=hours, D=Days - Once the command is sent the device will begin to send readings at the frequency requested. Whilst you are testing it's useful not to yet issue CYCLE, once asleep it's not an easy task to wake it.
+·         CYCLE - Activate cyclic sleeping, the device will wake every INTVL - Once this command has been issued the device will remain asleep for the majority of the time. Whilst asleep everything is turned off, that includes the radio.
+·         WAKE
+ Device specific commands
+
+·         TMPA - Reply with the temperature
+·         TEMP - Reply with the temperature
+·         BVALxxxxx sets the B coefficient for the simplified Steinhart equation (default aXXBVAL3977-)
+·         RNOMxxxxx Sets the Thermistor resistance at 25 degrees c (default aXXRNOM10000)
+·         SRESxxxxx Sets the series resistor value (default aXXSRES10000)
+·         IRxxxxxxx Sets the Analog input resistance (default aXXIR185000-) you should not normally change this.
+Battery voltage
+In cyclic sleeping mode, the battery voltage is broadcast every 10 readings. The voltage is read at the point of tranmission so is always lower than the battery "at rest".

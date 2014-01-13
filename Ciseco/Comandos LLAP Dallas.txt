@@ -1,0 +1,7 @@
+a--TEMP-----
+a--DEVTYPE--
+a--DEVNAME--
+a--HELLO----
+a--APVER----
+a--SER------
+a--FVER-----
