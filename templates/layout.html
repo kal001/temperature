@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Temperatura Ambiente</title>
+        <title>Ambient Temperature</title>
 
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -21,6 +21,35 @@
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
+        {% if session.showgraph %}
+            <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+            <script type="text/javascript">
+              google.load("visualization", "1", {packages:["corechart"]});
+              google.setOnLoadCallback(drawChart);
+              function drawChart()
+              {
+                  // Create and populate the data table.
+                  var data = google.visualization.arrayToDataTable([
+                    ['Year', 'Austria', 'Bulgaria', 'Denmark', 'Greece'],
+                    ['2003',  1336060,    400361,    1001582,   997974],
+                    ['2004',  1538156,    366849,    1119450,   941795],
+                    ['2005',  1576579,    440514,    993360,    930593],
+                    ['2006',  1600652,    434552,    1004163,   897127],
+                    ['2007',  1968113,    393032,    979198,    1080887],
+                    ['2008',  1901067,    517206,    916965,    1056036]
+                  ]);
+
+                  // Create and draw the visualization.
+                  new google.visualization.BarChart(document.getElementById('chart_div')).
+                      draw(data,
+                           {title:"Yearly Coffee Consumption by Country",
+                            width:600, height:400,
+                            vAxis: {title: "Year"},
+                            hAxis: {title: "Cups"}}
+                      );
+              }
+            </script>
+        {% endif %}
     </head>
 
     <body>
@@ -38,46 +67,49 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="#">Temperatura Ambiente</a>
+              <a class="navbar-brand" href="#">Ambient Temperature</a>
             </div>
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                <li><a href="/about">About</a></li>
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Filter<b class="caret"></b></a>
                   <ul class="dropdown-menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
+                    <li class="dropdown-header">Dates</li>
+                    <li><a href="#"><span class="glyphicon glyphicon-ok"></span> Last 24 hours</a></li>
+                    <li><a href="#">Period</a></li>
                     <li class="divider"></li>
-                    <li class="dropdown-header">Nav header</li>
-                    <li><a href="#">Separated link</a></li>
-                    <li><a href="#">One more separated link</a></li>
+                    <li class="dropdown-header">Sensors</li>
+                    <li><a href="#"><span class="glyphicon glyphicon-ok"></span> All sensors</a></li>
+                    <li><a href="#">Selected Sensors</a></li>
+                  </ul>
+                </li>
+
+                  <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Show<b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li class="dropdown-header">Configure</li>
+                    <li><a href="#"><span class="glyphicon glyphicon-ok"></span> Graphical data</a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-ok"></span> Last hour</a></li>
                   </ul>
                 </li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
                 <li><a href="../navbar/">Português</a></li>
-                <li><a href="../navbar-static-top/">English</a></li>
+                <li><a href="../navbar-static-top/"><span class="glyphicon glyphicon-globe"></span> English</a></li>
               </ul>
             </div><!--/.nav-collapse -->
           </div>
         </div>
 
         <div class="container">
-          <div class="jumbotron">
-            <p>
-          {% if not session.logged_in %}
-              <a class="btn btn-lg btn-primary" href="{{ url_for('login') }}" role="button">login &raquo;</a>
-          {% else %}
-            <a class="btn btn-lg btn-primary" href="{{ url_for('logout') }}" role="button">logout &raquo;</a>
-          {% endif %}
-            </p>
-          </div>
+
           {% for message in get_flashed_messages() %}
-            <div class="jumbotron">{{ message }}</div>
+            <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+            </div>
           {% endfor %}
           {% block body %}{% endblock %}
         </div>
