@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlite3 import dbapi2 as sqlite3
-from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
+from flask import Flask, Markup, request, session, g, redirect, url_for, abort, render_template, flash
 
 # Stores the current filter options on the data to be displayed
 defaults = {
@@ -81,7 +81,13 @@ def show_main():
 
     session['showgraph'] = True
 
-    return render_template('show_main.html')
+    if records:
+        graph = print_graph_script(records, minimo, maximo, sensores)
+    else:
+        graph = ""
+
+    #todo permitir caracteres unicode em graph
+    return render_template('show_main.html', graph = Markup(graph))
 
 @app.route('/add', methods=['POST'])
 def add_entry():
@@ -193,6 +199,67 @@ def get_sensors(interval):
         dictsensores[row[0]] = row[1]
 
     return rows
+
+# print the javascript to generate the chart
+# pass the table generated from the database info
+def print_graph_script(records, minimo, maximo, sens):
+    chart_code = """
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('datetime', 'Data');
+    """
+
+    for sensor in sens[:]:
+        chart_code += "data.addColumn('number', '{0} {1}');\n".format('Temperatura', str(sensor[1]))
+        chart_code += "data.addColumn({type:'string', role:'annotation'});\n"
+        chart_code += "data.addColumn({type:'string', role:'annotationText'});\n"
+
+    umsominimo = True
+    umsomaximo = True
+
+    for row in records[:]:
+        rowstr = "data.addRow([new Date('{0}'), ".format(str(row[0]).replace(' ', 'T'))
+
+        for sensor in sens[:]:
+            if str(row[2]) == str(sensor[0]):
+                rowstr += "{0},".format(str(round(row[1], 1)))
+
+                if row[1] == minimo and umsominimo:
+                    rowstr += "'MIN','{0} C -> {1}',".format(str(round(row[1], 1)), row[0])
+                    umsominimo = False
+                elif row[1] == maximo and umsomaximo:
+                    rowstr += "'MAX','{0} C -> {1}',".format(str(round(row[1], 1)), row[0])
+                    umsomaximo = False
+                else:
+                    rowstr += 'null,null,'
+            else:
+                rowstr += "null,null,null,"
+        rowstr = rowstr[:-1]
+
+        rowstr += "]);\n"
+        chart_code += rowstr
+
+    chart_code += """
+        var options = {
+            title: '%s',
+            lineWidth:3,
+            curveType: 'function',
+            interpolateNulls: true,
+            vAxis: {maxValue: %d, minValue: %d, gridlines: {count: %d}},
+            hAxis: {title: '%s', format:'(dd) HH:mm', gridLines: {count:-1}}
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>""" % (
+        'Temperatura (C)', int(maximo) + 1, int(minimo), int(maximo) + 1 - int(minimo) + 1, '(dia) Hora')
+
+    return chart_code
 
 if __name__ == '__main__':
     #init_db()
