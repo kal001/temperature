@@ -1,0 +1,9 @@
+Python
+Flask
+Sqlite
+HTML
+CSS
+Javascript
+Twitter Bootstrap
+Apache
+Debian Linux

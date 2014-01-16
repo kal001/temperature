@@ -51,12 +51,28 @@
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Filter<b class="caret"></b></a>
                   <ul class="dropdown-menu">
                     <li class="dropdown-header">Dates</li>
-                    <li><a href="#"><span class="glyphicon glyphicon-ok"></span> Last 24 hours</a></li>
-                    <li><a href="#">Period</a></li>
+                    <li><a href="/lastday">
+                        {% if config['ULTIMODIA'] %}
+                            <span class="glyphicon glyphicon-ok"></span>
+                        {%  endif %}
+                         Last hours</a></li>
+                    <li><a href="/bydates">
+                        {% if config['PORDATAS'] %}
+                            <span class="glyphicon glyphicon-ok"></span>
+                        {%  endif %}
+                         Period</a></li>
                     <li class="divider"></li>
                     <li class="dropdown-header">Sensors</li>
-                    <li><a href="#"><span class="glyphicon glyphicon-ok"></span> All sensors</a></li>
-                    <li><a href="#">Selected Sensors</a></li>
+                    <li><a href="/allsensors">
+                        {% if not config['SENSORESAVER'] %}
+                            <span class="glyphicon glyphicon-ok"></span>
+                        {%  endif %}
+                         All sensors</a></li>
+                    <li><a href="/sensorstoshow">
+                        {% if config['SENSORESAVER'] %}
+                            <span class="glyphicon glyphicon-ok"></span>
+                        {%  endif %}
+                         Selected Sensors</a></li>
                   </ul>
                 </li>
 
@@ -64,8 +80,16 @@
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Show<b class="caret"></b></a>
                   <ul class="dropdown-menu">
                     <li class="dropdown-header">Configure</li>
-                    <li><a href="#"><span class="glyphicon glyphicon-ok"></span> Graphical data</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-ok"></span> Last hour</a></li>
+                    <li><a href="/showgraph">
+                        {% if config['SHOWGRAPH'] %}
+                            <span class="glyphicon glyphicon-ok"></span>
+                        {%  endif %}
+                         Show Graph</a></li>
+                    <li><a href="/showlasthour">
+                        {% if config['SHOWLASTHOUR'] %}
+                            <span class="glyphicon glyphicon-ok"></span>
+                        {%  endif %}
+                         Last hour stats</a></li>
                   </ul>
                 </li>
               </ul>
@@ -78,13 +102,16 @@
         </div>
 
         <div class="container">
-
-          {% for message in get_flashed_messages() %}
-            <div class="alert alert-danger alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{ message }}
-            </div>
-          {% endfor %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                      {% for category, message in get_flashed_messages(with_categories=true) %}
+                        <div class="alert {{ category }} alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        {{ message }}
+                        </div>
+                      {% endfor %}
+                {% endif %}
+            {% endwith %}
           {% block body %}{% endblock %}
         </div>
 

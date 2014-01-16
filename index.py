@@ -1,17 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from sqlite3 import dbapi2 as sqlite3
-from flask import Flask, Markup, request, session, g, redirect, url_for, abort, render_template, flash
-
-# Stores the current filter options on the data to be displayed
-defaults = {
-    'ultimodia': True,
-    'periodo': '24',
-    'pordatas': False,
-    'datainicio': '2013-12-01',
-    'datafim': '2013-12-31',
-    'sensoresaver': []
-}
+from flask import Flask, Markup, request, session, g, redirect, render_template, flash
+from time import strftime
 
 # Dictionary with the available sensors on the current graph
 dictsensores = {}
@@ -24,7 +15,15 @@ app.config.update(dict(
     DATABASE='/Users/FernandoLourenco/Dropbox/Raspberry Pi/temperatura/templog.db',
     DEBUG=True,
     SECRET_KEY='development key',
-    APPVERSION = '0.61'
+    APPVERSION = '0.61',
+    ULTIMODIA = True,
+    PORDATAS = False,
+    PERIODO = '24',
+    DATAINICIO = '2013-12-01',
+    DATAFIM = '2013-12-31',
+    SENSORESAVER = [],
+    SHOWGRAPH = True,
+    SHOWLASTHOUR = True
 ))
 app.config.from_pyfile('settings.cfg', silent=True)
 
@@ -62,12 +61,15 @@ def close_db(error):
 
 @app.route('/')
 def show_main():
-    option = None
+    option = app.config['PERIODO']
 
     #todo actualizar com parâmetros do menú
     #todo corrigir datas fixas
-    if option is None:
-        option = "2013-12-01|2014-01-31"
+    if app.config['PORDATAS']:
+        option = app.config['DATAINICIO'] + "|" + app.config['DATAFIM']
+    else:
+        app.config['DATAINICIO'] = strftime("%Y-%m-%d")
+        app.config['DATAFIM'] = strftime("%Y-%m-%d")
 
     # get data from the database
     records = get_data(option, "*", "all")
@@ -79,53 +81,126 @@ def show_main():
         maximo = 0
     sensores = get_sensors(option)
 
-    session['showgraph'] = True
-
-    if records:
-        graph = print_graph_script(records, minimo, maximo, sensores)
+    if app.config['SHOWGRAPH']:
+        if records:
+            session['showgraph'] = True
+            graph = print_graph_script(records, minimo, maximo, sensores)
+        else:
+            session['showgraph'] = False
+            flash('No data to show! Please change Filter options on the above menu.', 'alert-warning')
+            graph = ""
     else:
+        session['showgraph'] = False
         graph = ""
 
     #todo permitir caracteres unicode em graph
     return render_template('show_main.html', graph = Markup(graph))
 
-@app.route('/add', methods=['POST'])
-def add_entry():
-    if not session.get('logged_in'):
-        abort(401)
-    db = get_db()
-    db.execute('insert into entries (title, text) values (?, ?)',
-                 [request.form['title'], request.form['text']])
-    db.commit()
-    flash('New entry was successfully posted')
-    return redirect(url_for('show_entries'))
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            flash('You were logged in')
-            return redirect(url_for('show_entries'))
-    return render_template('login.html', error=error)
-
-
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    flash('You were logged out')
-    return redirect(url_for('show_entries'))
 
 @app.route('/about')
 def about():
-    flash(u"Isto é um programa de visualização de temperatura. Versão: {0}".format(app.config['APPVERSION']))
-    return render_template('show_main.html')
+    flash(u"Isto é um programa de visualização de temperatura. Versão: {0}".format(app.config['APPVERSION']), 'alert-info')
+    return redirect('/')
+
+@app.route('/bydates', methods=['GET', 'POST'])
+def bydates():
+    app.config['PORDATAS'] = True
+    app.config['ULTIMODIA'] = False
+
+    if request.method == 'POST':
+        app.config['DATAINICIO'] = request.form['datainicio']
+        app.config['DATAFIM'] = request.form['datafim']
+
+        return redirect('/')
+    else:
+        selector = """
+        <form method="post" action="/bydates">
+        From <input value=%s name="datainicio" type="date">
+        To <input value=%s name="datafim" type="date">
+        <button type="submit" class="btn btn-default">Show</button>
+        </form>
+        """ % (app.config['DATAINICIO'], app.config['DATAFIM'])
+
+        flash(Markup(selector), 'alert-info')
+        return redirect('/')
+
+@app.route('/lastday', methods=['GET', 'POST'])
+def lastday():
+    app.config['PORDATAS'] = False
+    app.config['ULTIMODIA'] = True
+
+    if request.method == 'POST':
+        app.config['PERIODO'] = request.form['timeinterval']
+        return redirect('/')
+    else:
+        s1 = ""
+        s2 = ""
+        s3 = ""
+        if app.config['PERIODO'] == "24":
+            s3 = 'selected="selected"'
+        if app.config['PERIODO'] == "12":
+            s2 = 'selected="selected"'
+        if app.config['PERIODO'] == "6":
+            s1 = 'selected="selected"'
+
+        selector = """
+        <form method="post" action="/lastday">
+        <select name="timeinterval">
+        <option value="6" %s> last 6 hours</option>
+        <option value="12" %s> last 12 hours</option>
+        <option value="24" %s> last 24 hours</option>
+        </select>
+        <button type="submit" class="btn btn-default">Show</button>
+        </form>
+        """ % (s1,s2,s3)
+        flash(Markup(selector), 'alert-info')
+        return redirect('/')
+
+@app.route('/allsensors')
+def allsensors():
+    app.config['SENSORESAVER'] = []
+    return redirect('/')
+
+@app.route('/sensorstoshow', methods=['GET', 'POST'])
+def sensorstoshow():
+    #todo colocar filtro de sensores a funcionar
+    if request.method == 'POST':
+        app.config['SENSORESAVER'] = request.form['sensores']
+        flash(app.config['SENSORESAVER'], 'alert-info')
+        return redirect('/')
+    else:
+        selector = """
+        <form method="post" action="/sensorstoshow">
+        <select multiple="multiple" name="sensores">
+        """
+
+        for sensid in dictsensores:
+            if (sensid in app.config['SENSORESAVER']) or (app.config['SENSORESAVER'] == []):
+                seleccionado = 'selected="selected"'
+            else:
+                seleccionado = ''
+
+            selector += '<option %s value="%s">%s</option>' % (seleccionado, sensid, dictsensores[sensid])
+
+        selector += """
+        </select>
+        <button type="submit" class="btn btn-default">Show</button>
+        </form>
+        """
+
+        flash(Markup(selector), 'alert-info')
+        return redirect('/')
+
+@app.route('/showgraph')
+def showgraph():
+    app.config['SHOWGRAPH'] = not app.config['SHOWGRAPH']
+    return redirect('/')
+
+@app.route('/showlasthour')
+def showlasthour():
+    #todo colocar estaisticas da ultima hora
+    app.config['SHOWLASTHOUR'] = not app.config['SHOWLASTHOUR']
+    return redirect('/')
 
 def get_data(interval, function, output):
     db = get_db()
@@ -134,8 +209,8 @@ def get_data(interval, function, output):
 
     # Create query limited to the sensors to show
     st = ''
-    if defaults['sensoresaver']:
-        for sens in defaults['sensoresaver']:
+    if app.config['SENSORESAVER']:
+        for sens in app.config['SENSORESAVER']:
             st += "'{0}',".format(sens)
         st = st[:-1]
 
@@ -145,9 +220,9 @@ def get_data(interval, function, output):
         else:
             datas = interval.split('|')
             query += " WHERE (timestamp>='%s') AND (timestamp<='%s 23:59:59')" % (datas[0], datas[1])
-        if defaults['sensoresaver']:
+        if app.config['SENSORESAVER']:
             query += " AND id in ({0})".format(st)
-    elif defaults['sensoresaver']:
+    elif app.config['SENSORESAVER']:
         query += " WHERE id in ({0})".format(st)
 
     curs.execute(query)
