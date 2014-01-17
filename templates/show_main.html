@@ -1,13 +1,22 @@
 {% extends "layout.html" %}
 {% block body %}
-  <div class="panel panel-primary">
     {% if session.showgraph %}
+        <div class="panel panel-primary">
         <div class="panel-title">Temperature Graph Plot</div>
         <div class="panel-content">
         <div id="chart_div" style="width: 95%; height: 500px; display: block; margin-left: auto; margin-right: auto;"></div>
         <p></p>
         </div>
+        </div>
     {% else %}
     {% endif %}
-  </div>
+
+  {% if session.showlasthour %}
+      <div class="panel panel-primary">
+      <div class="panel-title">Last Hour data (all sensors)</div>
+      <div class="panel-content">
+      {{ lasthour }}
+      </div>
+      </div>
+  {% endif %}
 {% endblock %}

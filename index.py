@@ -15,7 +15,7 @@ app.config.update(dict(
     DATABASE='/Users/FernandoLourenco/Dropbox/Raspberry Pi/temperatura/templog.db',
     DEBUG=True,
     SECRET_KEY='development key',
-    APPVERSION = '0.61',
+    APPVERSION = '0.63',
     ULTIMODIA = True,
     PORDATAS = False,
     PERIODO = '24',
@@ -61,6 +61,8 @@ def close_db(error):
 
 @app.route('/')
 def show_main():
+    global dictsensores
+
     option = app.config['PERIODO']
 
     #todo actualizar com parâmetros do menú
@@ -81,6 +83,8 @@ def show_main():
         maximo = 0
     sensores = get_sensors(option)
 
+    session['showgraph'] = False
+    graph = ""
     if app.config['SHOWGRAPH']:
         if records:
             session['showgraph'] = True
@@ -93,8 +97,41 @@ def show_main():
         session['showgraph'] = False
         graph = ""
 
+    session['showlasthour'] = False
+    lasthour = ""
+    if app.config['SHOWLASTHOUR']:
+        session['showlasthour'] = True
+
+        db = get_db()
+        curs = db.cursor()
+        rows = curs.execute("SELECT * FROM temps WHERE timestamp>datetime('now','-1 hour') ORDER BY timestamp DESC")
+
+        lasthour = """
+        <table class="table">
+        <tr>
+        <td><strong>Data/Hora</strong></td>
+        <td><strong>Temperatura&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</strong></td>
+        <td><strong>Local</strong></td>
+        </tr>
+        """
+
+        totalrows = 0
+        for row in rows:
+            lasthour += "<tr><td>{0}&emsp;&emsp;</td><td>{1:.1f} C</td><td>{2}</td></tr>".format(str(row[0]), float(row[1]),
+                                                                                  dictsensores[row[2]])
+            totalrows += 1
+
+        lasthour += "</table>"
+
+        if totalrows == 0:
+            session['showlasthour'] = False
+            flash('No last hour data to show!', 'alert-warning')
+            lasthour = ""
+
+        #conn.close()
+
     #todo permitir caracteres unicode em graph
-    return render_template('show_main.html', graph = Markup(graph))
+    return render_template('show_main.html', graph = Markup(graph), lasthour = Markup(lasthour))
 
 
 @app.route('/about')
@@ -273,6 +310,7 @@ def get_sensors(interval):
     for row in rows[:]:
         dictsensores[row[0]] = row[1]
 
+    #flash(dictsensores, 'alert-info')
     return rows
 
 # print the javascript to generate the chart
