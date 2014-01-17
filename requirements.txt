@@ -1,1 +1,3 @@
 flask
+xlwt
+Flask-Babel

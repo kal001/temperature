@@ -1,12 +1,20 @@
 {% extends "layout.html" %}
 {% block body %}
     {% if session.showgraph %}
-        <div class="panel panel-primary">
-        <div class="panel-title">Temperature Graph Plot</div>
-        <div class="panel-content">
-        <div id="chart_div" style="width: 95%; height: 500px; display: block; margin-left: auto; margin-right: auto;"></div>
-        <p></p>
-        </div>
+        <script>
+        function copyText()
+        {
+            alert(document.getElementById("filename").value)
+        }
+        </script>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <span class="label label-success">
+                <a href="/uploads/excelfile.xls">Download excel data</a>
+                </span>
+                <div id="chart_div" style="width: 100%; height: 500px; display: block; margin-left: auto; margin-right: auto;"></div>
+            </div>
         </div>
     {% else %}
     {% endif %}
