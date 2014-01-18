@@ -11,6 +11,16 @@
         </library>
       </libraries>
     </data-source>
+    <data-source source="LOCAL" name="Data Source" uuid="754c3816-f088-4dd9-991f-a1a4be26ec89">
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/templog.db</jdbc-url>
+      <libraries>
+        <library>
+          <url>file://$PROJECT_DIR$/sqlite-jdbc-3.7.15-M1.jar</url>
+        </library>
+      </libraries>
+    </data-source>
   </component>
 </project>
 

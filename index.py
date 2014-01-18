@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from sqlite3 import dbapi2 as sqlite3
-from flask import Flask, Markup, request, session, g, redirect, render_template, flash, send_from_directory
 from time import strftime
+
+from flask import Flask, Markup, request, session, g, redirect, render_template, flash, send_from_directory
 import xlwt
-import os
+
 
 # Dictionary with the available sensors on the current graph
 dictsensores = {}
@@ -106,8 +107,7 @@ def show_main():
                 sheet1.write(linha, 1, row[1])
                 sheet1.write(linha, 2, row[2])
                 linha += 1
-
-            book.save(os.path.join("uploads", "excelfile.xls"))
+            # book.save(os.path.join('temperature/uploads', 'excelfile.xls'))
 
         else:
             session['showgraph'] = False
@@ -129,9 +129,9 @@ def show_main():
         lasthour = """
         <table class="table">
         <tr>
-        <td><strong>Data/Hora</strong></td>
-        <td><strong>Temperatura&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</strong></td>
-        <td><strong>Local</strong></td>
+        <td><strong>Date/Hour</strong></td>
+        <td><strong>Temperature&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</strong></td>
+        <td><strong>Sensor</strong></td>
         </tr>
         """
 
@@ -160,7 +160,7 @@ def download_file(filename):
 
 @app.route('/about')
 def about():
-    flash(u"Isto é um programa de visualização de temperatura. Versão: {0}".format(app.config['APPVERSION']), 'alert-info')
+    flash(u"This is a program to show temperature logs. Version: {0}".format(app.config['APPVERSION']), 'alert-info')
     return redirect('/')
 
 @app.route('/bydates', methods=['GET', 'POST'])
@@ -351,7 +351,7 @@ def print_graph_script(records, minimo, maximo, sens):
     """
 
     for sensor in sens[:]:
-        chart_code += "data.addColumn('number', '{0} {1}');\n".format('Temperatura', str(sensor[1]))
+        chart_code += "data.addColumn('number', '{0} {1}');\n".format('Temperature', str(sensor[1]))
         chart_code += "data.addColumn({type:'string', role:'annotation'});\n"
         chart_code += "data.addColumn({type:'string', role:'annotationText'});\n"
 
@@ -394,7 +394,7 @@ def print_graph_script(records, minimo, maximo, sens):
         chart.draw(data, options);
       }
     </script>""" % (
-        'Temperatura (C)', int(maximo) + 1, int(minimo), int(maximo) + 1 - int(minimo) + 1, '(dia) Hora')
+        'Temperature (C)', int(maximo) + 1, int(minimo), int(maximo) + 1 - int(minimo) + 1, '(day) Hour')
 
     return chart_code
 
