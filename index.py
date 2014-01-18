@@ -14,9 +14,9 @@ app = Flask(__name__)
 
 # Load default config and override config from a local file
 app.config.update(dict(
-    DATABASE='/Users/FernandoLourenco/Dropbox/Raspberry Pi/temperatura/templog.db',
+    DATABASE='templog.db',
     DEBUG=True,
-    SECRET_KEY='development key',
+    SECRET_KEY = 'a34dkkl123',
     APPVERSION = '0.64',
     ULTIMODIA = True,
     PORDATAS = False,
@@ -67,8 +67,6 @@ def show_main():
 
     option = app.config['PERIODO']
 
-    #todo actualizar com parâmetros do menú
-    #todo corrigir datas fixas
     if app.config['PORDATAS']:
         option = app.config['DATAINICIO'] + "|" + app.config['DATAFIM']
     else:
