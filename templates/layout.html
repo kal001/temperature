@@ -8,13 +8,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
         <meta name="author" content="Fernando José Lourenço">
-        <link rel="shortcut icon" href="temperature/docs-assets/ico/favicon.png">
+        <link rel="shortcut icon" href="{{ config['SUBFOLDER'] }}/docs-assets/ico/favicon.png">
 
         <!-- Bootstrap core CSS -->
-        <link href="temperature/static/dist/css/bootstrap.css" rel="stylesheet">
+        <link href="{{ config['SUBFOLDER'] }}/static/dist/css/bootstrap.css" rel="stylesheet">
 
         <!-- Custom styles for this template -->
-        <link href="temperature/static/navbar-fixed-top.css" rel="stylesheet">
+        <link href="{{ config['SUBFOLDER'] }}/static/navbar-fixed-top.css" rel="stylesheet">
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -46,29 +46,29 @@
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
                 <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                <li><a href="/about">About</a></li>
+                <li><a href="{{ config['SUBFOLDER'] }}/about">About</a></li>
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Filter<b class="caret"></b></a>
                   <ul class="dropdown-menu">
                     <li class="dropdown-header">Dates</li>
-                    <li><a href="/lastday">
+                    <li><a href="{{ config['SUBFOLDER'] }}/lastday">
                         {% if config['ULTIMODIA'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
                          Last hours</a></li>
-                    <li><a href="/bydates">
+                    <li><a href="{{ config['SUBFOLDER'] }}/bydates">
                         {% if config['PORDATAS'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
                          Period</a></li>
                     <li class="divider"></li>
                     <li class="dropdown-header">Sensors</li>
-                    <li><a href="/allsensors">
+                    <li><a href="{{ config['SUBFOLDER'] }}/allsensors">
                         {% if not config['SENSORESAVER'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
                          All sensors</a></li>
-                    <li><a href="/sensorstoshow">
+                    <li><a href="{{ config['SUBFOLDER'] }}/sensorstoshow">
                         {% if config['SENSORESAVER'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
@@ -80,12 +80,12 @@
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Show<b class="caret"></b></a>
                   <ul class="dropdown-menu">
                     <li class="dropdown-header">Configure</li>
-                    <li><a href="/showgraph">
+                    <li><a href="{{ config['SUBFOLDER'] }}/showgraph">
                         {% if config['SHOWGRAPH'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
                          Show Graph</a></li>
-                    <li><a href="/showlasthour">
+                    <li><a href="{{ config['SUBFOLDER'] }}/showlasthour">
                         {% if config['SHOWLASTHOUR'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
@@ -119,7 +119,7 @@
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-        <script src="temperature/static/dist/js/bootstrap.min.js"></script>
+        <script src="{{ config['SUBFOLDER'] }}/static/dist/js/bootstrap.min.js"></script>
 
     </body>
 

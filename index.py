@@ -2,9 +2,11 @@
 
 from sqlite3 import dbapi2 as sqlite3
 from time import strftime
+import os
 
-from flask import Flask, Markup, request, session, g, redirect, render_template, flash, send_from_directory
+from flask import Flask, Markup, request, session, g, redirect, url_for, render_template, flash, send_from_directory
 import xlwt
+
 
 
 # Dictionary with the available sensors on the current graph
@@ -18,7 +20,10 @@ app.config.update(dict(
     DATABASE='templog.db',
     DEBUG=True,
     SECRET_KEY = 'a34dkkl123',
-    APPVERSION = '0.64',
+    APPLICATION_ROOT = '',
+    SUBFOLDER = '',
+    SERVER_NAME='',
+    APPVERSION = '0.65',
     ULTIMODIA = True,
     PORDATAS = False,
     PERIODO = '24',
@@ -90,25 +95,6 @@ def show_main():
         if records:
             session['showgraph'] = True
             graph = print_graph_script(records, minimo, maximo, sensores)
-
-            #create excel file with data
-            book = xlwt.Workbook(encoding="utf-8")
-
-            sheet1 = book.add_sheet("Sheet 1")
-
-            #todo save sensor name instead of id
-            sheet1.write(0, 0, "DateTime stamp")
-            sheet1.write(0, 1, "Temperature")
-            sheet1.write(0, 2, "Sensor ID")
-
-            linha = 1
-            for row in records[:]:
-                sheet1.write(linha, 0, row[0])
-                sheet1.write(linha, 1, row[1])
-                sheet1.write(linha, 2, row[2])
-                linha += 1
-            # book.save(os.path.join('temperature/uploads', 'excelfile.xls'))
-
         else:
             session['showgraph'] = False
             flash('No data to show! Please change Filter options on the above menu.', 'alert-warning')
@@ -148,20 +134,40 @@ def show_main():
             flash('No last hour data to show!', 'alert-warning')
             lasthour = ""
 
-        #conn.close()
-
     #todo permitir caracteres unicode em graph
     return render_template('show_main.html', graph = Markup(graph), lasthour = Markup(lasthour))
 
 @app.route('/uploads/<path:filename>')
 def download_file(filename):
-    return send_from_directory('uploads', filename, as_attachment=True)
+    option = app.config['PERIODO']
+    records = get_data(option, "*", "all")
 
+    if records:
+        #create excel file with data
+        book = xlwt.Workbook(encoding="utf-8")
+
+        sheet1 = book.add_sheet("Sheet 1")
+
+        #todo save sensor name instead of id
+        sheet1.write(0, 0, "DateTime stamp")
+        sheet1.write(0, 1, "Temperature")
+        sheet1.write(0, 2, "Sensor ID")
+
+        linha = 1
+        for row in records[:]:
+            sheet1.write(linha, 0, row[0])
+            sheet1.write(linha, 1, row[1])
+            sheet1.write(linha, 2, row[2])
+            linha += 1
+        # book.save(os.path.join(app.config['APPLICATION_ROOT'],'uploads', 'excelfile.xls'))
+        return send_from_directory(os.path.join(app.config['APPLICATION_ROOT'],'uploads'), filename, as_attachment=True)
+    else:
+        return redirect(url_for('show_main'))
 
 @app.route('/about')
 def about():
     flash(u"This is a program to show temperature logs. Version: {0}".format(app.config['APPVERSION']), 'alert-info')
-    return redirect('/')
+    return redirect(url_for('show_main'))
 
 @app.route('/bydates', methods=['GET', 'POST'])
 def bydates():
@@ -172,18 +178,18 @@ def bydates():
         app.config['DATAINICIO'] = request.form['datainicio']
         app.config['DATAFIM'] = request.form['datafim']
 
-        return redirect('/')
+        return redirect(url_for('show_main'))
     else:
         selector = """
-        <form method="post" action="/bydates">
+        <form method="post" action="%s/bydates">
         From <input value=%s name="datainicio" type="date">
         To <input value=%s name="datafim" type="date">
         <button type="submit" class="btn btn-default">Show</button>
         </form>
-        """ % (app.config['DATAINICIO'], app.config['DATAFIM'])
+        """ % (app.config['SUBFOLDER'], app.config['DATAINICIO'], app.config['DATAFIM'])
 
         flash(Markup(selector), 'alert-info')
-        return redirect('/')
+        return redirect(url_for('show_main'))
 
 @app.route('/lastday', methods=['GET', 'POST'])
 def lastday():
@@ -192,7 +198,7 @@ def lastday():
 
     if request.method == 'POST':
         app.config['PERIODO'] = request.form['timeinterval']
-        return redirect('/')
+        return redirect(url_for('show_main'))
     else:
         s1 = ""
         s2 = ""
@@ -215,12 +221,12 @@ def lastday():
         </form>
         """ % (s1,s2,s3)
         flash(Markup(selector), 'alert-info')
-        return redirect('/')
+        return redirect(url_for('show_main'))
 
 @app.route('/allsensors')
 def allsensors():
     app.config['SENSORESAVER'] = []
-    return redirect('/')
+    return redirect(url_for('show_main'))
 
 @app.route('/sensorstoshow', methods=['GET', 'POST'])
 def sensorstoshow():
@@ -228,12 +234,12 @@ def sensorstoshow():
     if request.method == 'POST':
         app.config['SENSORESAVER'] = request.form['sensores']
         flash(app.config['SENSORESAVER'], 'alert-info')
-        return redirect('/')
+        return redirect(url_for('show_main'))
     else:
         selector = """
-        <form method="post" action="/sensorstoshow">
+        <form method="post" action="%s/sensorstoshow">
         <select multiple="multiple" name="sensores">
-        """
+        """ % app.config['SUBFOLDER']
 
         for sensid in dictsensores:
             if (sensid in app.config['SENSORESAVER']) or (app.config['SENSORESAVER'] == []):
@@ -250,18 +256,18 @@ def sensorstoshow():
         """
 
         flash(Markup(selector), 'alert-info')
-        return redirect('/')
+        return redirect(url_for('show_main'))
 
 @app.route('/showgraph')
 def showgraph():
     app.config['SHOWGRAPH'] = not app.config['SHOWGRAPH']
-    return redirect('/')
+    return redirect(url_for('show_main'))
 
 @app.route('/showlasthour')
 def showlasthour():
     #todo colocar estaisticas da ultima hora
     app.config['SHOWLASTHOUR'] = not app.config['SHOWLASTHOUR']
-    return redirect('/')
+    return redirect(url_for('show_main'))
 
 def get_data(interval, function, output):
     db = get_db()
@@ -289,21 +295,21 @@ def get_data(interval, function, output):
     curs.execute(query)
     if output == "oneasfloat":
         rows = curs.fetchone()
-        #conn.close()
+
         if not rows[0]:
             return None
         else:
             return float(rows[0])
     elif output == "one[0]":
         rows = curs.fetchone()
-        #conn.close()
+
         if not rows:
             return None
         else:
             return rows
     else:
         rows = curs.fetchall()
-        #conn.close()
+
         if not rows:
             return None
         else:
@@ -327,8 +333,6 @@ def get_sensors(interval):
 
     curs.execute(query)
     rows = curs.fetchall()
-
-    #conn.close()
 
     dictsensores = {}
     for row in rows[:]:
