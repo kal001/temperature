@@ -4,17 +4,15 @@ from sqlite3 import dbapi2 as sqlite3
 from time import strftime
 import os
 
-from flask import Flask, Markup, request, session, g, redirect, url_for, render_template, flash, send_from_directory
+from flask import Flask, Markup, request, redirect, url_for, \
+    render_template, flash, send_from_directory, abort, g, session
 from flask.ext.babel import Babel, gettext
 import xlwt
 
 
-#todo adicionar contador de visitas
 #todo verificar porque motivo configuração é gravada para todos os clientes
 #todo fazer login com Google
 #todo permitir editar BD de sensores
-#todo retirar máximo e mínimo do gráfico para poupar tamanho
-#todo servir ficheiros seleccionados de /
 
 # Dictionary with the available sensors on the current graph
 dictsensores = {}
@@ -91,6 +89,8 @@ def close_db(error):
 @app.route('/')
 def show_main():
     global dictsensores
+
+    session['TESTE'] = True
 
     option = app.config['PERIODO']
 
@@ -192,10 +192,12 @@ def download_file(filename):
     else:
         return redirect(url_for('show_main'))
 
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(app.config['ONDISK'] + app.config['SUBFOLDER'], 'favicon.ico')
-
+@app.route('/<path:filename>')
+def favicon(filename):
+    if filename in ['favicon.ico', 'README']:
+        return send_from_directory(app.config['ONDISK'] + app.config['SUBFOLDER'], filename)
+    else:
+        abort(404)
 
 @app.route('/about')
 def about():
@@ -419,8 +421,8 @@ def print_graph_script(records, minimo, maximo, sens):
 
     for sensor in sens[:]:
         chart_code += "data.addColumn('number', '{0} {1}');\n".format(_('Temperature'), str(sensor[1]))
-        chart_code += "data.addColumn({type:'string', role:'annotation'});\n"
-        chart_code += "data.addColumn({type:'string', role:'annotationText'});\n"
+        #chart_code += "data.addColumn({type:'string', role:'annotation'});\n"
+        #chart_code += "data.addColumn({type:'string', role:'annotationText'});\n"
 
     umsominimo = True
     umsomaximo = True
@@ -432,16 +434,16 @@ def print_graph_script(records, minimo, maximo, sens):
             if str(row[2]) == str(sensor[0]):
                 rowstr += "{0},".format(str(round(row[1], 1)))
 
-                if row[1] == minimo and umsominimo:
-                    rowstr += "'MIN','{0} C -> {1}',".format(str(round(row[1], 1)), row[0])
-                    umsominimo = False
-                elif row[1] == maximo and umsomaximo:
-                    rowstr += "'MAX','{0} C -> {1}',".format(str(round(row[1], 1)), row[0])
-                    umsomaximo = False
-                else:
-                    rowstr += 'null,null,'
+                #if row[1] == minimo and umsominimo:
+                #    rowstr += "'MIN','{0} C -> {1}',".format(str(round(row[1], 1)), row[0])
+                #    umsominimo = False
+                #elif row[1] == maximo and umsomaximo:
+                #    rowstr += "'MAX','{0} C -> {1}',".format(str(round(row[1], 1)), row[0])
+                #    umsomaximo = False
+                #else:
+                #    rowstr += 'null,null,'
             else:
-                rowstr += "null,null,null,"
+                rowstr += "null," #null,null,"
         rowstr = rowstr[:-1]
 
         rowstr += "]);\n"
