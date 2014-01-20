@@ -9,6 +9,12 @@ from flask.ext.babel import Babel, gettext
 import xlwt
 
 
+#todo adicionar contador de visitas
+#todo verificar porque motivo configuração é gravada para todos os clientes
+#todo fazer login com Google
+#todo permitir editar BD de sensores
+#todo retirar máximo e mínimo do gráfico para poupar tamanho
+#todo servir ficheiros seleccionados de /
 
 # Dictionary with the available sensors on the current graph
 dictsensores = {}
