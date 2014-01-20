@@ -5,6 +5,7 @@ from time import strftime
 import os
 
 from flask import Flask, Markup, request, session, g, redirect, url_for, render_template, flash, send_from_directory
+from flask.ext.babel import Babel, gettext
 import xlwt
 
 
@@ -22,7 +23,8 @@ app.config.update(dict(
     SECRET_KEY = 'a34dkkl123',
     APPLICATION_ROOT = '',
     SUBFOLDER = '',
-    SERVER_NAME='',
+    SERVER_NAME = '',
+    ONDISK = '',
     APPVERSION = '0.65',
     ULTIMODIA = True,
     PORDATAS = False,
@@ -31,10 +33,23 @@ app.config.update(dict(
     DATAFIM = '2013-12-31',
     SENSORESAVER = [],
     SHOWGRAPH = True,
-    SHOWLASTHOUR = True
+    SHOWLASTHOUR = True,
+    LANGUAGE = 'en'
 ))
 app.config.from_pyfile('settings.cfg', silent=True)
 
+# available languages
+LANGUAGES = {
+    'en': 'English',
+    'pt': 'Portugues'
+}
+babel = Babel(app)
+
+_ = gettext
+
+@babel.localeselector
+def get_locale():
+    return app.config['LANGUAGE'] #request.accept_languages.best_match(LANGUAGES.keys())
 
 def connect_db():
     """Connects to the specific database."""
@@ -97,7 +112,7 @@ def show_main():
             graph = print_graph_script(records, minimo, maximo, sensores)
         else:
             session['showgraph'] = False
-            flash('No data to show! Please change Filter options on the above menu.', 'alert-warning')
+            flash(_('No data to show! Please change Filter options on the above menu.'), 'alert-warning')
             graph = ""
     else:
         session['showgraph'] = False
@@ -115,9 +130,15 @@ def show_main():
         lasthour = """
         <table class="table">
         <tr>
-        <td><strong>Date/Hour</strong></td>
-        <td><strong>Temperature&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</strong></td>
-        <td><strong>Sensor</strong></td>
+        <td><strong>"""
+        lasthour += _('Date/Hour')
+        lasthour += """</strong></td>
+        <td><strong>"""
+        lasthour += _('Temperature')
+        lasthour += """&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</strong></td>
+        <td><strong>"""
+        lasthour += _('Sensor')
+        lasthour += """</strong></td>
         </tr>
         """
 
@@ -131,7 +152,7 @@ def show_main():
 
         if totalrows == 0:
             session['showlasthour'] = False
-            flash('No last hour data to show!', 'alert-warning')
+            flash(_('No last hour data to show!'), 'alert-warning')
             lasthour = ""
 
     #todo permitir caracteres unicode em graph
@@ -148,25 +169,26 @@ def download_file(filename):
 
         sheet1 = book.add_sheet("Sheet 1")
 
-        #todo save sensor name instead of id
-        sheet1.write(0, 0, "DateTime stamp")
-        sheet1.write(0, 1, "Temperature")
-        sheet1.write(0, 2, "Sensor ID")
+        sheet1.write(0, 0, _('DateTime stamp'))
+        sheet1.write(0, 1, _('Temperature'))
+        sheet1.write(0, 2, _('Sensor'))
 
         linha = 1
         for row in records[:]:
             sheet1.write(linha, 0, row[0])
             sheet1.write(linha, 1, row[1])
-            sheet1.write(linha, 2, row[2])
+            sheet1.write(linha, 2, dictsensores[row[2]])
             linha += 1
-        # book.save(os.path.join(app.config['APPLICATION_ROOT'],'uploads', 'excelfile.xls'))
-        return send_from_directory(os.path.join(app.config['APPLICATION_ROOT'],'uploads'), filename, as_attachment=True)
+        book.save(app.config['ONDISK'] + app.config['SUBFOLDER'] + os.sep + 'uploads' + os.sep + filename)
+
+        #flash("Ficheiro: %s" % (app.config['ONDISK'] + app.config['SUBFOLDER'] + os.sep + 'uploads' + os.sep + filename) , "alert-info")
+        return send_from_directory(app.config['ONDISK'] + app.config['SUBFOLDER'] + os.sep + 'uploads', filename, as_attachment=True)
     else:
         return redirect(url_for('show_main'))
 
 @app.route('/about')
 def about():
-    flash(u"This is a program to show temperature logs. Version: {0}".format(app.config['APPVERSION']), 'alert-info')
+    flash(_("This is a program to show temperature logs. Version: {0}").format(app.config['APPVERSION']), 'alert-info')
     return redirect(url_for('show_main'))
 
 @app.route('/bydates', methods=['GET', 'POST'])
@@ -184,9 +206,10 @@ def bydates():
         <form method="post" action="%s/bydates">
         From <input value=%s name="datainicio" type="date">
         To <input value=%s name="datafim" type="date">
-        <button type="submit" class="btn btn-default">Show</button>
-        </form>
+        <button type="submit" class="btn btn-default">
         """ % (app.config['SUBFOLDER'], app.config['DATAINICIO'], app.config['DATAFIM'])
+        selector += _('Show')
+        selector += "</button></form>"
 
         flash(Markup(selector), 'alert-info')
         return redirect(url_for('show_main'))
@@ -211,15 +234,28 @@ def lastday():
             s1 = 'selected="selected"'
 
         selector = """
-        <form method="post" action="/lastday">
+        <form method="post" action="%s/lastday">
         <select name="timeinterval">
-        <option value="6" %s> last 6 hours</option>
-        <option value="12" %s> last 12 hours</option>
-        <option value="24" %s> last 24 hours</option>
+        <option value="6" %s>
+        """ % (app.config['SUBFOLDER'], s1)
+        selector += _('last 6 hours')
+        selector += """</option>
+        <option value="12" %s>
+        """ %s2
+        selector += _('last 12 hours')
+        selector += """</option>
+        <option value="24" %s>
+        """ % s3
+        selector += _('last 24 hours')
+        selector += """</option>
         </select>
-        <button type="submit" class="btn btn-default">Show</button>
+        <button type="submit" class="btn btn-default">
+        """
+        selector += _('Show')
+        selector += """</button>
         </form>
-        """ % (s1,s2,s3)
+        """
+
         flash(Markup(selector), 'alert-info')
         return redirect(url_for('show_main'))
 
@@ -230,15 +266,16 @@ def allsensors():
 
 @app.route('/sensorstoshow', methods=['GET', 'POST'])
 def sensorstoshow():
-    #todo colocar filtro de sensores a funcionar
+    #todo colocar filtro de sensores a funcionar, com multiplos sensores
     if request.method == 'POST':
-        app.config['SENSORESAVER'] = request.form['sensores']
-        flash(app.config['SENSORESAVER'], 'alert-info')
+        app.config['SENSORESAVER'] = []
+        app.config['SENSORESAVER'].append(request.form['sensores'])
+        flash("Form: '{0}'".format(request.form['sensores']), 'alert-info')
         return redirect(url_for('show_main'))
     else:
         selector = """
         <form method="post" action="%s/sensorstoshow">
-        <select multiple="multiple" name="sensores">
+        <select name="sensores" multiple>
         """ % app.config['SUBFOLDER']
 
         for sensid in dictsensores:
@@ -251,11 +288,13 @@ def sensorstoshow():
 
         selector += """
         </select>
-        <button type="submit" class="btn btn-default">Show</button>
+        <button type="submit" class="btn btn-default">"""
+        selector += _('Show')
+        selector += """</button>
         </form>
         """
 
-        flash(Markup(selector), 'alert-info')
+        flash(Markup(selector), "alert-info")
         return redirect(url_for('show_main'))
 
 @app.route('/showgraph')
@@ -268,6 +307,18 @@ def showlasthour():
     #todo colocar estaisticas da ultima hora
     app.config['SHOWLASTHOUR'] = not app.config['SHOWLASTHOUR']
     return redirect(url_for('show_main'))
+
+@app.route('/en')
+def english():
+    app.config['LANGUAGE'] = 'en'
+    return redirect(url_for('show_main'))
+
+
+@app.route('/pt')
+def portugues():
+    app.config['LANGUAGE'] = 'pt'
+    return redirect(url_for('show_main'))
+
 
 def get_data(interval, function, output):
     db = get_db()
@@ -292,6 +343,7 @@ def get_data(interval, function, output):
     elif app.config['SENSORESAVER']:
         query += " WHERE id in ({0})".format(st)
 
+    #flash(query, 'alert-info')
     curs.execute(query)
     if output == "oneasfloat":
         rows = curs.fetchone()
@@ -337,8 +389,8 @@ def get_sensors(interval):
     dictsensores = {}
     for row in rows[:]:
         dictsensores[row[0]] = row[1]
+        #flash("Nome: {0}; Id: {1}".format(dictsensores[row[0]], row[0]), 'alert-info')
 
-    #flash(dictsensores, 'alert-info')
     return rows
 
 # print the javascript to generate the chart
@@ -355,7 +407,7 @@ def print_graph_script(records, minimo, maximo, sens):
     """
 
     for sensor in sens[:]:
-        chart_code += "data.addColumn('number', '{0} {1}');\n".format('Temperature', str(sensor[1]))
+        chart_code += "data.addColumn('number', '{0} {1}');\n".format(_('Temperature'), str(sensor[1]))
         chart_code += "data.addColumn({type:'string', role:'annotation'});\n"
         chart_code += "data.addColumn({type:'string', role:'annotationText'});\n"
 
@@ -397,8 +449,7 @@ def print_graph_script(records, minimo, maximo, sens):
         var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
         chart.draw(data, options);
       }
-    </script>""" % (
-        'Temperature (C)', int(maximo) + 1, int(minimo), int(maximo) + 1 - int(minimo) + 1, '(day) Hour')
+    </script>""" % (_('Temperature (C)'), int(maximo) + 1, int(minimo), int(maximo) + 1 - int(minimo) + 1, _('(day) Hour'))
 
     return chart_code
 

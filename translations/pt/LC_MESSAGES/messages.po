@@ -1,0 +1,133 @@
+# Portuguese translations for PROJECT.
+# Copyright (C) 2014 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2014-01-20 00:01+0000\n"
+"PO-Revision-Date: 2014-01-20 00:04-0000\n"
+"Last-Translator: Fernando Jose Lourenco <fernando.lourenco@lourenco.eu>\n"
+"Language-Team: pt <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+"Language: pt\n"
+"X-Generator: Poedit 1.6.3\n"
+
+#: index.py:113
+msgid "No data to show! Please change Filter options on the above menu."
+msgstr ""
+"Sem dados para mostrar! Por favor alterar opcoes de Filtrar no menu acima."
+
+#: index.py:132
+msgid "Date/Hour"
+msgstr "Data/Hora"
+
+#: index.py:135 index.py:171 index.py:408
+msgid "Temperature"
+msgstr "Temperatura"
+
+#: index.py:138 index.py:172
+msgid "Sensor"
+msgstr "Sensor"
+
+#: index.py:153
+msgid "No last hour data to show!"
+msgstr "Não ha dados da ultima hora para mostrar!"
+
+#: index.py:170
+msgid "DateTime stamp"
+msgstr "Data e Hora"
+
+#: index.py:189
+msgid "This is a program to show temperature logs. Version: {0}"
+msgstr "Programa para mostrar registos de temperatura. Versao: {0}"
+
+#: index.py:209 index.py:252 index.py:290 templates/layout.html:80
+msgid "Show"
+msgstr "Mostrar"
+
+#: index.py:239
+msgid "last 6 hours"
+msgstr "ultimas 6 horas"
+
+#: index.py:243
+msgid "last 12 hours"
+msgstr "ultimas 12 horas"
+
+#: index.py:247
+msgid "last 24 hours"
+msgstr "ultimas 24 horas"
+
+#: index.py:450
+msgid "Temperature (C)"
+msgstr "Temperatura (C)"
+
+#: index.py:450
+msgid "(day) Hour"
+msgstr "(dia) Hora"
+
+#: templates/layout.html:44
+msgid "Ambient Temperature"
+msgstr "Temperatura Ambiente"
+
+#: templates/layout.html:48
+msgid "Home"
+msgstr "Inicio"
+
+#: templates/layout.html:49
+msgid "About"
+msgstr "Sobre"
+
+#: templates/layout.html:51
+msgid "Filter"
+msgstr "Filtrar"
+
+#: templates/layout.html:53
+msgid "Dates"
+msgstr "Datas"
+
+#: templates/layout.html:58
+msgid "Last Hours ..."
+msgstr "Ultimas Horas ..."
+
+#: templates/layout.html:63
+msgid "Period ..."
+msgstr "Periodo ..."
+
+#: templates/layout.html:65
+msgid "Sensors"
+msgstr "Sensores"
+
+#: templates/layout.html:70
+msgid "All Sensors"
+msgstr "Todos os sensores"
+
+#: templates/layout.html:75
+msgid "Selected Sensors ..."
+msgstr "Seleccionar Sensores ..."
+
+#: templates/layout.html:82
+msgid "Configure"
+msgstr "Configurar"
+
+#: templates/layout.html:87
+msgid "Show Graph"
+msgstr "Mostrar Grafico"
+
+#: templates/layout.html:92
+msgid "Show Last Hour stats"
+msgstr "Mostrar estatisiticas ultima hora"
+
+#: templates/show_main.html:10
+msgid "Download Excel data"
+msgstr "Descarregar dados em Excel"
+
+#: templates/show_main.html:21
+msgid "Last Hour Data (all sensors)"
+msgstr "Dados da ultima hora (todos os sensores)"

@@ -41,67 +41,76 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="#">Ambient Temperature</a>
+              <a class="navbar-brand" href="#">{{ _('Ambient Temperature') }}</a>
             </div>
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                <li><a href="{{ config['SUBFOLDER'] }}/about">About</a></li>
+                <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> {{ _('Home') }}</a></li>
+                <li><a href="{{ config['SUBFOLDER'] }}/about">{{ _('About') }}</a></li>
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Filter<b class="caret"></b></a>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ _('Filter') }}<b class="caret"></b></a>
                   <ul class="dropdown-menu">
-                    <li class="dropdown-header">Dates</li>
+                    <li class="dropdown-header">{{ _('Dates') }}</li>
                     <li><a href="{{ config['SUBFOLDER'] }}/lastday">
                         {% if config['ULTIMODIA'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
-                         Last hours</a></li>
+                         {{ _('Last Hours ...') }}</a></li>
                     <li><a href="{{ config['SUBFOLDER'] }}/bydates">
                         {% if config['PORDATAS'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
-                         Period</a></li>
+                         {{ _('Period ...') }}</a></li>
                     <li class="divider"></li>
-                    <li class="dropdown-header">Sensors</li>
+                    <li class="dropdown-header">{{ _('Sensors') }}</li>
                     <li><a href="{{ config['SUBFOLDER'] }}/allsensors">
                         {% if not config['SENSORESAVER'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
-                         All sensors</a></li>
+                         {{ _('All Sensors') }}</a></li>
                     <li><a href="{{ config['SUBFOLDER'] }}/sensorstoshow">
                         {% if config['SENSORESAVER'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
-                         Selected Sensors</a></li>
+                         {{ _('Selected Sensors ...') }}</a></li>
                   </ul>
                 </li>
 
                   <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Show<b class="caret"></b></a>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ _('Show') }}<b class="caret"></b></a>
                   <ul class="dropdown-menu">
-                    <li class="dropdown-header">Configure</li>
+                    <li class="dropdown-header">{{ _('Configure') }}</li>
                     <li><a href="{{ config['SUBFOLDER'] }}/showgraph">
                         {% if config['SHOWGRAPH'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
-                         Show Graph</a></li>
+                         {{ _('Show Graph') }}</a></li>
                     <li><a href="{{ config['SUBFOLDER'] }}/showlasthour">
                         {% if config['SHOWLASTHOUR'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
-                         Last hour stats</a></li>
+                         {{ _('Show Last Hour stats') }}</a></li>
                   </ul>
                 </li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
-                <li><a href="../navbar/">Português</a></li>
-                <li><a href="../navbar-static-top/"><span class="glyphicon glyphicon-globe"></span> English</a></li>
+                <li><a href="{{ config['SUBFOLDER'] }}/pt">
+                    {% if config['LANGUAGE'] == 'pt' %}
+                        <span class="glyphicon glyphicon-globe"></span>
+                    {%  endif %}
+                    Português</a></li>
+                <li><a href="{{ config['SUBFOLDER'] }}/en">
+                    {% if config['LANGUAGE'] == 'en' %}
+                        <span class="glyphicon glyphicon-globe"></span>
+                    {%  endif %}
+                    English</a></li>
               </ul>
             </div><!--/.nav-collapse -->
           </div>
         </div>
 
         <div class="container">
+            <img src="{{ config['SUBFOLDER'] }}/docs-assets/ico/ajax-loader.gif" id="loading-indicator" style="display:none" />
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                       {% for category, message in get_flashed_messages(with_categories=true) %}
@@ -121,6 +130,15 @@
         <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script src="{{ config['SUBFOLDER'] }}/static/dist/js/bootstrap.min.js"></script>
 
+        <script>
+        $(document).ajaxSend(function(event, request, settings) {
+            $('#loading-indicator').show();
+        });
+
+        $(document).ajaxComplete(function(event, request, settings) {
+            $('#loading-indicator').hide();
+        });
+        </script>
     </body>
 
 </html>

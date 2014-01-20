@@ -1,0 +1,11 @@
+Extrair strings:
+pybabel extract -F babel.cfg -o po/messages.pot .
+
+Criar dicionario numa lingua (pt):
+pybabel init -i po/messages.pot -d translations -l pt
+
+Actualizar diccionarios:
+pybabel update -i po/messages.pot -d translations
+
+Compilar o dicionario depois de traduzido:
+pybabel compile -d translations

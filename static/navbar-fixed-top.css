@@ -3,6 +3,12 @@ body {
   padding-top: 70px;
 }
 
+#loading-indicator {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+
 .navbar-default {
     background-color: #11167f;
     border-color: #0335ae;
