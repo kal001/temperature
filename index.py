@@ -186,6 +186,11 @@ def download_file(filename):
     else:
         return redirect(url_for('show_main'))
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(app.config['ONDISK'] + app.config['SUBFOLDER'], 'favicon.ico')
+
+
 @app.route('/about')
 def about():
     flash(_("This is a program to show temperature logs. Version: {0}").format(app.config['APPVERSION']), 'alert-info')
