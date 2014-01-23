@@ -3,7 +3,7 @@
 from sqlite3 import dbapi2 as sqlite3
 from time import strftime
 import os
-
+import sys
 from flask import Flask, Markup, request, redirect, url_for, \
     render_template, flash, send_from_directory, abort, g, session
 from flask.ext.babel import Babel, gettext
@@ -29,7 +29,7 @@ app.config.update(dict(
     SUBFOLDER = '',
     SERVER_NAME = '',
     ONDISK = '',
-    APPVERSION = '0.65',
+    APPVERSION = '0.66',
     ULTIMODIA = True,
     PORDATAS = False,
     PERIODO = '24',
@@ -194,7 +194,7 @@ def download_file(filename):
 
 @app.route('/<path:filename>')
 def favicon(filename):
-    if filename in ['favicon.ico', 'README']:
+    if filename in ['favicon.ico', 'README', 'robots.txt']:
         return send_from_directory(app.config['ONDISK'] + app.config['SUBFOLDER'], filename)
     else:
         abort(404)
@@ -320,6 +320,52 @@ def showlasthour():
     #todo colocar estaisticas da ultima hora
     app.config['SHOWLASTHOUR'] = not app.config['SHOWLASTHOUR']
     return redirect(url_for('show_main'))
+
+@app.route('/editdatabase')
+def editdatabase():
+    db = get_db()
+    curs = db.cursor()
+    query = "SELECT id, name, baudrate, porta FROM sensors"
+    curs.execute(query)
+    rows = curs.fetchall()
+    return render_template('show_database.html', data = rows)
+
+@app.route('/editdatabase/edit/<string:id>')
+def editdatabase_edit(id):
+    session['editdatabase'] = True
+    session['databaserow'] = id
+    return redirect(url_for('editdatabase'))
+
+@app.route('/editdatabase/saveeditdatabase/<string:id>', methods=['GET', 'POST'])
+def saveeditdatabase(id):
+    #todo gravar
+    session['editdatabase'] = False
+
+    if request.method == 'POST':
+        sensid = request.form['id']
+        sensname = request.form['name']
+        sensbaud = request.form['baud']
+        sensport = request.form['port']
+
+        db = get_db()
+        curs = db.cursor()
+        try:
+            query = "UPDATE sensors SET id='{0}', name='{1}', baudrate='{2}', porta='{3}' where id='{4}';".format(sensid, sensname, sensbaud, sensport, id)
+            flash(query, 'alert-info')
+            curs.execute(query)
+        except:
+            flash(_('Error updating database'), 'alert-info')
+            e = sys.exc_info()[0]
+            flash(str(e), 'alert-info')
+
+    return redirect(url_for('editdatabase'))
+
+
+@app.route('/editdatabase/canceleditdatabase')
+def canceleditdatabase():
+    session['editdatabase'] = False
+    return redirect(url_for('editdatabase'))
+
 
 @app.route('/en')
 def english():

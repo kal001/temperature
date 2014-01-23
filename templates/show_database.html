@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block body %}
+
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <h3> {{ _('Sensor Database') }}</h3>
+            <div class="table-responsive">
+                <table class="table table-striped">
+
+                    <tr>
+                        <td><strong>{{ _('action') }}</strong></td>
+                        <td><strong>{{ _('id') }}</strong></td>
+                        <td><strong>{{ _('sensor name') }}</strong></td>
+                        <td><strong>{{ _('baudrate') }}</strong></td>
+                        <td><strong>{{ _('interface') }}</strong></td>
+                    </tr>
+
+                    {% for row in data %}
+                    <form action="{{ config['SUBFOLDER'] }}/editdatabase/saveeditdatabase/{{ row[0] }}" name="savedatabase" method="POST">
+                    <tr>
+                        <td>
+                            {%  if session['databaserow'] == row[0] %}
+                                {% if session['editdatabase'] %}
+
+                                <button type="submit" class="btn btn-default">
+                                <span class="glyphicon glyphicon-ok"></span>
+                                </button>
+
+                                <button type="button" class="btn btn-default">
+                                <a href="{{ config['SUBFOLDER'] }}/editdatabase/canceleditdatabase">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </a>
+                                </button>
+
+                                {% else %}
+                                <a href="{{ config['SUBFOLDER'] }}/editdatabase/edit/{{ row[0] }}">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                </a>
+                                {% endif %}
+                            {%  else %}
+                                <a href="{{ config['SUBFOLDER'] }}/editdatabase/edit/{{ row[0] }}">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                </a>
+                            {% endif %}
+
+                        </td>
+                        {%  if (session['databaserow'] == row[0]) and (session['editdatabase']) %}
+                        <td><input type="text" class="form-control" name="id" value="{{ row[0] }}"></td>
+                        <td><input type="text" class="form-control" name="name" value="{{ row[1] }}"></td>
+                        <td><input type="text" class="form-control" name="baud" value="{{ row[2] }}"></td>
+                        <td><input type="text" class="form-control" name="port" value="{{ row[3] }}"></td>
+                        {%  else %}
+                        <td>{{ row[0] }}</td>
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[2] }}</td>
+                        <td>{{ row[3] }}</td>
+                        {%  endif %}
+                    </tr>
+                    </form>
+                    {% endfor %}
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
