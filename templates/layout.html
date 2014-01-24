@@ -113,7 +113,6 @@
         </div>
 
         <div class="container">
-            <img src="{{ config['SUBFOLDER'] }}/docs-assets/ico/ajax-loader.gif" id="loading-indicator" style="display:none" />
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                       {% for category, message in get_flashed_messages(with_categories=true) %}
@@ -133,16 +132,6 @@
         <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script src="{{ config['SUBFOLDER'] }}/static/dist/js/bootstrap.min.js"></script>
 
-        <script>
-        $(document).ajaxSend(function(event, request, settings) {
-            $('#loading-indicator').show();
-        });
-
-        $(document).ajaxComplete(function(event, request, settings) {
-            $('#loading-indicator').hide();
-        });
-        </script>
-    
         <!-- Start of StatCounter Code for Default Guide -->
         <script type="text/javascript">
         var sc_project=9554643;

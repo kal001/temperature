@@ -41,6 +41,9 @@
                                 <a href="{{ config['SUBFOLDER'] }}/editdatabase/edit/{{ row[0] }}">
                                     <span class="glyphicon glyphicon-pencil"></span>
                                 </a>
+                                <a data-toggle="modal" href="#myModal">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </a>
                             {% endif %}
 
                         </td>
@@ -58,10 +61,45 @@
                     </tr>
                     </form>
                     {% endfor %}
+                    <form action="{{ config['SUBFOLDER'] }}/editdatabase/savenewdatabase" name="savenewdatabase" method="POST">
+                    <tr>
+                        <td>
+                        <button type="submit" class="btn btn-default">
+                        <span class="glyphicon glyphicon-ok"></span>
+                        </button>
+                        </td>
 
+                        <td><input type="text" class="form-control" name="id" placeholder="{{ _('id') }}"></td>
+                        <td><input type="text" class="form-control" name="name" placeholder="{{ _('name') }}"></td>
+                        <td><input type="text" class="form-control" name="baud" placeholder="{{ _('baudrate') }}"></td>
+                        <td><input type="text" class="form-control" name="port" placeholder="{{ _('port') }}"></td>
+
+                    </tr>
+                    </form>
                 </table>
             </div>
 
         </div>
     </div>
+
+    <!-- Confirm delete -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">{{ _('Confirm Delete') }}</h4>
+          </div>
+          <div class="modal-body">
+              {{ _('DELETE!') }}
+          </div>
+          <div class="modal-footer">
+              <form action="{{ config['SUBFOLDER'] }}/editdatabase/delete/BB">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ _('Cancel') }}</button>
+                <button type="submit" class="btn btn-primary">{{ _('Confirm Delete') }}</button>
+              </form>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 {% endblock %}
