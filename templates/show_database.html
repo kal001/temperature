@@ -1,5 +1,18 @@
 {% extends "layout.html" %}
 {% block body %}
+<script>
+function setValue(id) {
+    document.getElementById("rowid").value = id;
+}
+function getValue() {
+    return document.getElementById("rowid").value;
+}
+function doDelete() {
+    id = getValue();
+    window.location.href = "{{ config['SUBFOLDER'] }}/editdatabase/delete/" + getValue()
+    return false;
+}
+</script>
 
     <div class="panel panel-primary">
         <div class="panel-body">
@@ -41,9 +54,10 @@
                                 <a href="{{ config['SUBFOLDER'] }}/editdatabase/edit/{{ row[0] }}">
                                     <span class="glyphicon glyphicon-pencil"></span>
                                 </a>
-                                <a data-toggle="modal" href="#myModal">
+                                <a data-toggle="modal" href="#myModal" onclick="setValue('{{ row[0] }}');">
                                     <span class="glyphicon glyphicon-remove"></span>
                                 </a>
+                                <input type="hidden" id="rowid" value="" />
                             {% endif %}
 
                         </td>
@@ -94,7 +108,7 @@
               {{ _('DELETE!') }}
           </div>
           <div class="modal-footer">
-              <form action="{{ config['SUBFOLDER'] }}/editdatabase/delete/BB">
+              <form onsubmit="return doDelete();">
                 <button type="button" class="btn btn-default" data-dismiss="modal">{{ _('Cancel') }}</button>
                 <button type="submit" class="btn btn-primary">{{ _('Confirm Delete') }}</button>
               </form>

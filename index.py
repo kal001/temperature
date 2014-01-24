@@ -6,12 +6,13 @@ import os
 from flask import Flask, Markup, request, redirect, url_for, \
     render_template, flash, send_from_directory, abort, g, session
 from flask.ext.babel import Babel, gettext
+from functools import wraps
 import xlwt
 
 
 #todo verificar porque motivo configuração é gravada para todos os clientes
 #todo fazer login com Google
-#todo permitir editar BD de sensores
+#todo adicionar cache
 
 # Dictionary with the available sensors on the current graph
 dictsensores = {}
@@ -54,6 +55,14 @@ _ = gettext
 def get_locale():
     return app.config['LANGUAGE'] #request.accept_languages.best_match(LANGUAGES.keys())
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if g.user is None:
+            return redirect(url_for('login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
+
 def connect_db():
     """Connects to the specific database."""
     rv = sqlite3.connect(app.config['DATABASE'])
@@ -88,8 +97,6 @@ def close_db(error):
 @app.route('/')
 def show_main():
     global dictsensores
-
-    session['TESTE'] = True
 
     option = app.config['PERIODO']
 
@@ -320,10 +327,8 @@ def showlasthour():
     return redirect(url_for('show_main'))
 
 @app.route('/editdatabase')
+@login_required
 def editdatabase():
-    if not session['editdatabase']:
-        session['databaserow'] = None
-
     db = get_db()
     curs = db.cursor()
     query = "SELECT id, name, baudrate, porta FROM sensors"
@@ -332,12 +337,15 @@ def editdatabase():
     return render_template('show_database.html', data = rows)
 
 @app.route('/editdatabase/edit/<string:id>')
+@login_required
 def editdatabase_edit(id):
     session['editdatabase'] = True
     session['databaserow'] = id
+
     return redirect(url_for('editdatabase'))
 
 @app.route('/editdatabase/saveeditdatabase/<string:id>', methods=['GET', 'POST'])
+@login_required
 def saveeditdatabase(id):
     session['editdatabase'] = False
 
@@ -359,6 +367,7 @@ def saveeditdatabase(id):
     return redirect(url_for('editdatabase'))
 
 @app.route('/editdatabase/savenewdatabase', methods=['GET', 'POST'])
+@login_required
 def savenewdatabase():
     session['editdatabase'] = False
 
@@ -383,9 +392,8 @@ def savenewdatabase():
     return redirect(url_for('editdatabase'))
 
 @app.route('/editdatabase/delete/<string:id>')
+@login_required
 def editdatabase_delete(id):
-    #todo mostrar confirmação para apagar
-
     try:
         db = get_db()
         curs = db.cursor()
@@ -398,6 +406,7 @@ def editdatabase_delete(id):
     return redirect(url_for('editdatabase'))
 
 @app.route('/editdatabase/canceleditdatabase')
+@login_required
 def canceleditdatabase():
     session['editdatabase'] = False
     return redirect(url_for('editdatabase'))
@@ -414,6 +423,9 @@ def portugues():
     app.config['LANGUAGE'] = 'pt'
     return redirect(url_for('show_main'))
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
 
 def get_data(interval, function, output):
     db = get_db()
