@@ -12,9 +12,9 @@ import xlwt
 
 
 
-#todo verificar porque motivo configuração é gravada para todos os clientes
-#todo fazer login com Google
-#todo adicionar cache
+#todo change part of the configuration from config to session object
+#todo make login with google
+#todo add cache
 
 # Dictionary with the available sensors on the current graph
 dictsensores = {}
@@ -183,7 +183,7 @@ def show_main():
             flash(_('No last hour data to show!'), 'alert-warning')
             lasthour = ""
 
-    #todo permitir caracteres unicode em graph
+    #todo allow unicode characters on graph
     return render_template('show_main.html', graph = Markup(graph), lasthour = Markup(lasthour))
 
 @app.route('/uploads/<path:filename>')
@@ -301,7 +301,7 @@ def allsensors():
 
 @app.route('/sensorstoshow', methods=['GET', 'POST'])
 def sensorstoshow():
-    #todo colocar filtro de sensores a funcionar, com multiplos sensores
+    #todo make filter work with multiple sensors
     if request.method == 'POST':
         app.config['SENSORESAVER'] = []
         app.config['SENSORESAVER'].append(request.form['sensores'])
