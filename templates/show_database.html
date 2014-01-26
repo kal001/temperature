@@ -26,56 +26,62 @@ function doDelete() {
                         <td><strong>{{ _('sensor name') }}</strong></td>
                         <td><strong>{{ _('baudrate') }}</strong></td>
                         <td><strong>{{ _('interface') }}</strong></td>
+                        <td><strong>{{ _('active') }}</strong></td>
                     </tr>
 
                     {% for row in data %}
-                    <form action="{{ config['SUBFOLDER'] }}/editdatabase/saveeditdatabase/{{ row[0] }}" name="savedatabase" method="POST">
+                    <form action="{{ url_for('saveeditdatabase', id = row[0]) }}" name="savedatabase" method="POST">
                     <tr>
                         <td>
                             {%  if session['databaserow'] == row[0] %}
                                 {% if session['editdatabase'] %}
-
+                                <!-- We are editing database. Add buttons for cancel and save -->
                                 <button type="submit" class="btn btn-default">
                                 <span class="glyphicon glyphicon-ok"></span>
                                 </button>
 
                                 <button type="button" class="btn btn-default">
-                                <a href="{{ config['SUBFOLDER'] }}/editdatabase/canceleditdatabase">
+                                <a href="{{ url_for('canceleditdatabase') }}">
                                     <span class="glyphicon glyphicon-remove"></span>
                                 </a>
                                 </button>
 
                                 {% else %}
-                                <a href="{{ config['SUBFOLDER'] }}/editdatabase/edit/{{ row[0] }}">
+                                <!-- We are not editing database. Add buttons for edit -->
+                                <a href="{{ url_for('editdatabase_edit', id = row[0]) }}">
                                     <span class="glyphicon glyphicon-pencil"></span>
                                 </a>
                                 {% endif %}
                             {%  else %}
-                                <a href="{{ config['SUBFOLDER'] }}/editdatabase/edit/{{ row[0] }}">
+                                <a href="{{ url_for('editdatabase_edit', id = row[0]) }}">
                                     <span class="glyphicon glyphicon-pencil"></span>
                                 </a>
                                 <a data-toggle="modal" href="#myModal" onclick="setValue('{{ row[0] }}');">
                                     <span class="glyphicon glyphicon-remove"></span>
                                 </a>
-                                <input type="hidden" id="rowid" value="" />
                             {% endif %}
 
                         </td>
                         {%  if (session['databaserow'] == row[0]) and (session['editdatabase']) %}
+                        <!-- We are editing database. Add input fields -->
                         <td><input type="text" class="form-control" name="id" value="{{ row[0] }}"></td>
                         <td><input type="text" class="form-control" name="name" value="{{ row[1] }}"></td>
                         <td><input type="text" class="form-control" name="baud" value="{{ row[2] }}"></td>
                         <td><input type="text" class="form-control" name="port" value="{{ row[3] }}"></td>
+                        <td><input type="text" class="form-control" name="active" value="{{ row[4] }}"></td>
                         {%  else %}
+                        <!-- We are not editing database. Print database content -->
                         <td>{{ row[0] }}</td>
                         <td>{{ row[1] }}</td>
                         <td>{{ row[2] }}</td>
                         <td>{{ row[3] }}</td>
+                        <td>{{ row[4] }}</td>
                         {%  endif %}
                     </tr>
                     </form>
                     {% endfor %}
-                    <form action="{{ config['SUBFOLDER'] }}/editdatabase/savenewdatabase" name="savenewdatabase" method="POST">
+                    <!-- Add line for creating new database entry -->
+                    <form action="{{ url_for('savenewdatabase') }}" name="savenewdatabase" method="POST">
                     <tr>
                         <td>
                         <button type="submit" class="btn btn-default">
@@ -87,6 +93,7 @@ function doDelete() {
                         <td><input type="text" class="form-control" name="name" placeholder="{{ _('name') }}"></td>
                         <td><input type="text" class="form-control" name="baud" placeholder="{{ _('baudrate') }}"></td>
                         <td><input type="text" class="form-control" name="port" placeholder="{{ _('port') }}"></td>
+                        <td><input type="text" class="form-control" name="active" placeholder="{{ _('active') }}"></td>
 
                     </tr>
                     </form>
@@ -94,6 +101,7 @@ function doDelete() {
             </div>
 
         </div>
+        <input type="hidden" id="rowid" value="" />
     </div>
 
     <!-- Confirm delete -->

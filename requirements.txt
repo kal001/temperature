@@ -1,3 +1,5 @@
 flask
 xlwt
 flask-babel
+Flask-OpenID
+Flask-Login

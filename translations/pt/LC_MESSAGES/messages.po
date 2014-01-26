@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-01-20 00:01+0000\n"
-"PO-Revision-Date: 2014-01-20 00:04-0000\n"
+"POT-Creation-Date: 2014-01-26 19:30+0000\n"
+"PO-Revision-Date: 2014-01-26 19:33-0000\n"
 "Last-Translator: Fernando Jose Lourenco <fernando.lourenco@lourenco.eu>\n"
 "Language-Team: pt <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -19,70 +19,70 @@ msgstr ""
 "Language: pt\n"
 "X-Generator: Poedit 1.6.3\n"
 
-#: index.py:113
+#: index.py:141
 msgid "No data to show! Please change Filter options on the above menu."
 msgstr ""
 "Sem dados para mostrar! Por favor alterar opcoes de Filtrar no menu acima."
 
-#: index.py:132
+#: index.py:160
 msgid "Date/Hour"
 msgstr "Data/Hora"
 
-#: index.py:135 index.py:171 index.py:408
+#: index.py:163 index.py:199 index.py:543
 msgid "Temperature"
 msgstr "Temperatura"
 
-#: index.py:138 index.py:172
+#: index.py:166 index.py:200
 msgid "Sensor"
 msgstr "Sensor"
 
-#: index.py:153
+#: index.py:181
 msgid "No last hour data to show!"
 msgstr "Não ha dados da ultima hora para mostrar!"
 
-#: index.py:170
+#: index.py:198
 msgid "DateTime stamp"
 msgstr "Data e Hora"
 
-#: index.py:189
+#: index.py:224
 msgid "This is a program to show temperature logs. Version: {0}"
 msgstr "Programa para mostrar registos de temperatura. Versao: {0}"
 
-#: index.py:209 index.py:252 index.py:290 templates/layout.html:80
+#: index.py:244 index.py:287 index.py:325 templates/layout.html:85
 msgid "Show"
 msgstr "Mostrar"
 
-#: index.py:239
+#: index.py:274
 msgid "last 6 hours"
 msgstr "ultimas 6 horas"
 
-#: index.py:243
+#: index.py:278
 msgid "last 12 hours"
 msgstr "ultimas 12 horas"
 
-#: index.py:247
+#: index.py:282
 msgid "last 24 hours"
 msgstr "ultimas 24 horas"
 
-#: index.py:450
+#: index.py:408
+msgid "Invalid sensor id"
+msgstr "Invalido sensor id"
+
+#: index.py:585
 msgid "Temperature (C)"
 msgstr "Temperatura (C)"
 
-#: index.py:450
+#: index.py:585
 msgid "(day) Hour"
 msgstr "(dia) Hora"
 
-#: templates/layout.html:44
+#: templates/layout.html:45
 msgid "Ambient Temperature"
 msgstr "Temperatura Ambiente"
 
-#: templates/layout.html:48
+#: templates/layout.html:49
 msgid "Home"
 msgstr "Inicio"
-
-#: templates/layout.html:49
-msgid "About"
-msgstr "Sobre"
 
 #: templates/layout.html:51
 msgid "Filter"
@@ -112,17 +112,85 @@ msgstr "Todos os sensores"
 msgid "Selected Sensors ..."
 msgstr "Seleccionar Sensores ..."
 
-#: templates/layout.html:82
-msgid "Configure"
+#: templates/layout.html:80
+msgid "Setup"
 msgstr "Configurar"
 
-#: templates/layout.html:87
+#: templates/layout.html:82
+msgid "Database"
+msgstr "Base de Dados"
+
+#: templates/layout.html:83
+msgid "Edit Sensors Database"
+msgstr "Editar BD Sensores"
+
+#: templates/layout.html:90
 msgid "Show Graph"
 msgstr "Mostrar Grafico"
 
-#: templates/layout.html:92
+#: templates/layout.html:95
 msgid "Show Last Hour stats"
 msgstr "Mostrar estatisiticas ultima hora"
+
+#: templates/layout.html:97
+msgid "About"
+msgstr "Sobre"
+
+#: templates/layout.html:106
+msgid "Login"
+msgstr "Login"
+
+#: templates/layout.html:110
+msgid "Logout"
+msgstr "Sair"
+
+#: templates/show_database.html:19
+msgid "Sensor Database"
+msgstr "Base de Dados Sensores"
+
+#: templates/show_database.html:24
+msgid "action"
+msgstr "accao"
+
+#: templates/show_database.html:25 templates/show_database.html:92
+msgid "id"
+msgstr "id"
+
+#: templates/show_database.html:26
+msgid "sensor name"
+msgstr "nome sensor"
+
+#: templates/show_database.html:27 templates/show_database.html:94
+msgid "baudrate"
+msgstr "baudrate"
+
+#: templates/show_database.html:28
+msgid "interface"
+msgstr "interface"
+
+#: templates/show_database.html:29 templates/show_database.html:96
+msgid "active"
+msgstr "activo"
+
+#: templates/show_database.html:93
+msgid "name"
+msgstr "nome"
+
+#: templates/show_database.html:95
+msgid "port"
+msgstr "porta"
+
+#: templates/show_database.html:113 templates/show_database.html:121
+msgid "Confirm Delete"
+msgstr "Confirme apagar"
+
+#: templates/show_database.html:116
+msgid "DELETE!"
+msgstr "APAGAR!"
+
+#: templates/show_database.html:120
+msgid "Cancel"
+msgstr "Cancelar"
 
 #: templates/show_main.html:10
 msgid "Download Excel data"
@@ -131,3 +199,6 @@ msgstr "Descarregar dados em Excel"
 #: templates/show_main.html:21
 msgid "Last Hour Data (all sensors)"
 msgstr "Dados da ultima hora (todos os sensores)"
+
+#~ msgid "Configure"
+#~ msgstr "Configurar"

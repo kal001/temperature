@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="657366479">
-    <data-source source="LOCAL" name="Data Source" uuid="d99b77ed-00a6-41c3-995f-55b4cd5397c5">
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/templog.db</jdbc-url>
-      <libraries>
-        <library>
-          <url>file://$PROJECT_DIR$/sqlite-jdbc-3.7.15-M1.jar</url>
-        </library>
-      </libraries>
-    </data-source>
-    <data-source source="LOCAL" name="Data Source" uuid="754c3816-f088-4dd9-991f-a1a4be26ec89">
+  <component name="DataSourceManagerImpl" format="xml" hash="448198615">
+    <data-source source="LOCAL" name="Data Source" uuid="1bed3747-c0eb-4fa7-a3ca-23c741cc7f51">
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/templog.db</jdbc-url>

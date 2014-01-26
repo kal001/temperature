@@ -82,7 +82,7 @@ def get_temp_wu():
     try:
         conn=sqlite3.connect(dbname)
         curs=conn.cursor()
-        query = "SELECT baudrate, porta, id FROM sensors WHERE id like'W_'"
+        query = "SELECT baudrate, porta, id, active FROM sensors WHERE id like'W_'"
 
         curs.execute(query)
         rows=curs.fetchall()
@@ -93,13 +93,14 @@ def get_temp_wu():
             for row in rows[:]:
                 WUKEY = row[1]
                 STATION = row[0]
-        
-                try:
-                    r = requests.get("http://api.wunderground.com/api/{0}/conditions/q/{1}.json".format(WUKEY, STATION))
-                    data = r.json()
-                    log_temperature({'temperature': data['current_observation']['temp_c'], 'id': row[2]})
-                except Exception as e:
-                    raise
+
+                if int(row[3])>0:
+                    try:
+                        r = requests.get("http://api.wunderground.com/api/{0}/conditions/q/{1}.json".format(WUKEY, STATION))
+                        data = r.json()
+                        log_temperature({'temperature': data['current_observation']['temp_c'], 'id': row[2]})
+                    except Exception as e:
+                        raise
 
     except Exception as e:
         text_file = open("debug.txt", "a+")

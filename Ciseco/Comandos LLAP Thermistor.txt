@@ -11,7 +11,7 @@ a--CYCLE----
 a--WAKE-----
 a--SRESxxxxx
 
-aAACYCLE----
+a--CHDEVIDAB
 
 Generic commands
 ·         APVER - LLAP version

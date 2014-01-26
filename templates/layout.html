@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
         <meta name="author" content="Fernando José Lourenço">
+        <meta HTTP-EQUIV="refresh" CONTENT="600">
         <link rel="shortcut icon" href="{{ config['SUBFOLDER'] }}/favicon.ico">
 
         <!-- Bootstrap core CSS -->
@@ -41,34 +42,33 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="{{ config['SUBFOLDER'] }}/">{{ _('Ambient Temperature') }}</a>
+              <a class="navbar-brand" href="{{ url_for('show_main') }}">{{ _('Ambient Temperature') }}</a>
             </div>
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="{{ config['SUBFOLDER'] }}/"><span class="glyphicon glyphicon-home"></span> {{ _('Home') }}</a></li>
-                <li><a href="{{ config['SUBFOLDER'] }}/about">{{ _('About') }}</a></li>
+                <li class="active"><a href="{{ url_for('show_main') }}"><span class="glyphicon glyphicon-home"></span> {{ _('Home') }}</a></li>
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ _('Filter') }}<b class="caret"></b></a>
                   <ul class="dropdown-menu">
                     <li class="dropdown-header">{{ _('Dates') }}</li>
-                    <li><a href="{{ config['SUBFOLDER'] }}/lastday">
+                    <li><a href="{{ url_for('lastday') }}">
                         {% if config['ULTIMODIA'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
                          {{ _('Last Hours ...') }}</a></li>
-                    <li><a href="{{ config['SUBFOLDER'] }}/bydates">
+                    <li><a href="{{ url_for('bydates') }}">
                         {% if config['PORDATAS'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
                          {{ _('Period ...') }}</a></li>
                     <li class="divider"></li>
                     <li class="dropdown-header">{{ _('Sensors') }}</li>
-                    <li><a href="{{ config['SUBFOLDER'] }}/allsensors">
+                    <li><a href="{{ url_for('allsensors') }}">
                         {% if not config['SENSORESAVER'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
                          {{ _('All Sensors') }}</a></li>
-                    <li><a href="{{ config['SUBFOLDER'] }}/sensorstoshow">
+                    <li><a href="{{ url_for('sensorstoshow') }}">
                         {% if config['SENSORESAVER'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
@@ -80,35 +80,41 @@
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ _('Setup') }}<b class="caret"></b></a>
                   <ul class="dropdown-menu">
                     <li class="dropdown-header">{{ _('Database') }}</li>
-                    <li><a href="{{ config['SUBFOLDER'] }}/editdatabase">{{ _('Edit Sensors Database') }}</a></li>
+                    <li><a href="{{ url_for('editdatabase') }}">{{ _('Edit Sensors Database') }}</a></li>
                     <li class="divider"></li>
                     <li class="dropdown-header">{{ _('Show') }}</li>
-                    <li><a href="{{ config['SUBFOLDER'] }}/showgraph">
+                    <li><a href="{{ url_for('showgraph') }}">
                         {% if config['SHOWGRAPH'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
                          {{ _('Show Graph') }}</a></li>
-                    <li><a href="{{ config['SUBFOLDER'] }}/showlasthour">
+                    <li><a href="{{ url_for('showlasthour') }}">
                         {% if config['SHOWLASTHOUR'] %}
                             <span class="glyphicon glyphicon-ok"></span>
                         {%  endif %}
                          {{ _('Show Last Hour stats') }}</a></li>
+                    <li class="divider"></li>
+                    <li><a href="{{ url_for('about') }}">{{ _('About') }}</a></li>
                   </ul>
                 </li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="{{ config['SUBFOLDER'] }}/login">
-                    {% if g['user'] == 'pt' %}
+                    {% if not session.logged_in %}
+                        <a href="{{ url_for('login') }}">
                         <span class="glyphicon glyphicon-log-in"></span>
+                        {{ _('Login') }}</a></li>
+                    {% else %}
+                        <a href="{{ url_for('logout') }}">
+                        <span class="glyphicon glyphicon-log-out"></span>
+                        {{ _('Logout') }}</a></li>
                     {%  endif %}
-                    {{ _('Login') }}</a></li>
-                <li><a href="{{ config['SUBFOLDER'] }}/pt">
+                <li><a href="{{ url_for('portugues') }}">
                     {% if config['LANGUAGE'] == 'pt' %}
                         <span class="glyphicon glyphicon-globe"></span>
                     {%  endif %}
                     Português</a></li>
-                <li><a href="{{ config['SUBFOLDER'] }}/en">
+                <li><a href="{{ url_for('english') }}">
                     {% if config['LANGUAGE'] == 'en' %}
                         <span class="glyphicon glyphicon-globe"></span>
                     {%  endif %}

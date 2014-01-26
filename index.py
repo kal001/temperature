@@ -3,11 +3,13 @@
 from sqlite3 import dbapi2 as sqlite3
 from time import strftime
 import os
+from functools import wraps
+
 from flask import Flask, Markup, request, redirect, url_for, \
     render_template, flash, send_from_directory, abort, g, session
 from flask.ext.babel import Babel, gettext
-from functools import wraps
 import xlwt
+
 
 
 #todo verificar porque motivo configuração é gravada para todos os clientes
@@ -58,8 +60,8 @@ def get_locale():
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if g.user is None:
-            return redirect(url_for('login', next=request.url))
+        if not session['logged_in']:
+            return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -92,6 +94,20 @@ def close_db(error):
     """Closes the database again at the end of the request."""
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
+
+@app.before_first_request
+def appinit():
+    session.pop('used_id', None)
+    session['logged_in'] = False
+
+@app.before_request
+def load_user():
+    try:
+        user = session["user_id"]
+        g.user = user
+    except:
+        user = None
+        g.user = None
 
 
 @app.route('/')
@@ -331,7 +347,7 @@ def showlasthour():
 def editdatabase():
     db = get_db()
     curs = db.cursor()
-    query = "SELECT id, name, baudrate, porta FROM sensors"
+    query = "SELECT id, name, baudrate, porta, active FROM sensors"
     curs.execute(query)
     rows = curs.fetchall()
     return render_template('show_database.html', data = rows)
@@ -354,11 +370,13 @@ def saveeditdatabase(id):
         sensname = request.form['name']
         sensbaud = request.form['baud']
         sensport = request.form['port']
+        sensactive = request.form['active']
 
         db = get_db()
         curs = db.cursor()
         try:
-            query = "UPDATE sensors SET id='{0}', name='{1}', baudrate='{2}', porta='{3}' where id='{4}';".format(sensid, sensname, sensbaud, sensport, id)
+            query = "UPDATE sensors SET id='{0}', name='{1}', baudrate='{2}', porta='{3}', active='{4}' where id='{5}';".\
+                format(sensid, sensname, sensbaud, sensport, sensactive, id)
             curs.execute(query)
             db.commit()
         except sqlite3.OperationalError as e:
@@ -376,12 +394,14 @@ def savenewdatabase():
         sensname = request.form['name']
         sensbaud = request.form['baud']
         sensport = request.form['port']
+        sensactive = request.form['active']
 
         if len(sensid)>=2:
             try:
                 db = get_db()
                 curs = db.cursor()
-                query = "insert into sensors(id, name, baudrate, porta) values ('{0}', '{1}', '{2}', '{3}');".format(sensid, sensname, sensbaud, sensport)
+                query = "insert into sensors(id, name, baudrate, porta, active) values ('{0}', '{1}', '{2}', '{3}', '{4}');".\
+                    format(sensid, sensname, sensbaud, sensport, sensactive)
                 curs.execute(query)
                 db.commit()
             except sqlite3.OperationalError as e:
@@ -425,7 +445,15 @@ def portugues():
 
 @app.route('/login')
 def login():
+    session['user_id'] = 'FL'
+    session['logged_in'] = True
     return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('used_id', None)
+    session['logged_in'] = False
+    return render_template('logout.html')
 
 def get_data(interval, function, output):
     db = get_db()
