@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-01-26 19:30+0000\n"
-"PO-Revision-Date: 2014-01-26 19:33-0000\n"
+"POT-Creation-Date: 2014-01-26 23:12+0000\n"
+"PO-Revision-Date: 2014-01-26 23:14-0000\n"
 "Last-Translator: Fernando Jose Lourenco <fernando.lourenco@lourenco.eu>\n"
 "Language-Team: pt <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -19,60 +19,64 @@ msgstr ""
 "Language: pt\n"
 "X-Generator: Poedit 1.6.3\n"
 
-#: index.py:141
+#: index.py:143
 msgid "No data to show! Please change Filter options on the above menu."
 msgstr ""
 "Sem dados para mostrar! Por favor alterar opcoes de Filtrar no menu acima."
 
-#: index.py:160
+#: index.py:162
 msgid "Date/Hour"
 msgstr "Data/Hora"
 
-#: index.py:163 index.py:199 index.py:543
+#: index.py:165 index.py:201 index.py:551
 msgid "Temperature"
 msgstr "Temperatura"
 
-#: index.py:166 index.py:200
+#: index.py:168 index.py:202
 msgid "Sensor"
 msgstr "Sensor"
 
-#: index.py:181
+#: index.py:183
 msgid "No last hour data to show!"
 msgstr "Não ha dados da ultima hora para mostrar!"
 
-#: index.py:198
+#: index.py:200
 msgid "DateTime stamp"
 msgstr "Data e Hora"
 
-#: index.py:224
+#: index.py:226
 msgid "This is a program to show temperature logs. Version: {0}"
 msgstr "Programa para mostrar registos de temperatura. Versao: {0}"
 
-#: index.py:244 index.py:287 index.py:325 templates/layout.html:85
+#: index.py:246 index.py:289 index.py:327 templates/layout.html:85
 msgid "Show"
 msgstr "Mostrar"
 
-#: index.py:274
+#: index.py:276
 msgid "last 6 hours"
 msgstr "ultimas 6 horas"
 
-#: index.py:278
+#: index.py:280
 msgid "last 12 hours"
 msgstr "ultimas 12 horas"
 
-#: index.py:282
+#: index.py:284
 msgid "last 24 hours"
 msgstr "ultimas 24 horas"
 
-#: index.py:408
+#: index.py:386 index.py:430
+msgid "First sensors of the database are not editable."
+msgstr "Os primeiros sensores da Base de Dados nao sao editaveis."
+
+#: index.py:413
 msgid "Invalid sensor id"
 msgstr "Invalido sensor id"
 
-#: index.py:585
+#: index.py:593
 msgid "Temperature (C)"
 msgstr "Temperatura (C)"
 
-#: index.py:585
+#: index.py:593
 msgid "(day) Hour"
 msgstr "(dia) Hora"
 
@@ -144,6 +148,18 @@ msgstr "Login"
 msgid "Logout"
 msgstr "Sair"
 
+#: templates/login.html:3
+msgid "Under development."
+msgstr "Em desenvolvimento."
+
+#: templates/login.html:4
+msgid "Use with care. You cannow edit the database."
+msgstr "Usar com cuidado. Pode agora editar a Base de Dados."
+
+#: templates/logout.html:3
+msgid "Under development"
+msgstr "Em desenvolvimento"
+
 #: templates/show_database.html:19
 msgid "Sensor Database"
 msgstr "Base de Dados Sensores"
@@ -152,7 +168,7 @@ msgstr "Base de Dados Sensores"
 msgid "action"
 msgstr "accao"
 
-#: templates/show_database.html:25 templates/show_database.html:92
+#: templates/show_database.html:25 templates/show_database.html:93
 msgid "id"
 msgstr "id"
 
@@ -160,7 +176,7 @@ msgstr "id"
 msgid "sensor name"
 msgstr "nome sensor"
 
-#: templates/show_database.html:27 templates/show_database.html:94
+#: templates/show_database.html:27 templates/show_database.html:95
 msgid "baudrate"
 msgstr "baudrate"
 
@@ -168,27 +184,27 @@ msgstr "baudrate"
 msgid "interface"
 msgstr "interface"
 
-#: templates/show_database.html:29 templates/show_database.html:96
+#: templates/show_database.html:29 templates/show_database.html:97
 msgid "active"
 msgstr "activo"
 
-#: templates/show_database.html:93
+#: templates/show_database.html:94
 msgid "name"
 msgstr "nome"
 
-#: templates/show_database.html:95
+#: templates/show_database.html:96
 msgid "port"
 msgstr "porta"
 
-#: templates/show_database.html:113 templates/show_database.html:121
+#: templates/show_database.html:114 templates/show_database.html:122
 msgid "Confirm Delete"
 msgstr "Confirme apagar"
 
-#: templates/show_database.html:116
+#: templates/show_database.html:117
 msgid "DELETE!"
 msgstr "APAGAR!"
 
-#: templates/show_database.html:120
+#: templates/show_database.html:121
 msgid "Cancel"
 msgstr "Cancelar"
 

@@ -12,9 +12,9 @@ import xlwt
 
 
 
-#todo verificar porque motivo configuração é gravada para todos os clientes
-#todo fazer login com Google
-#todo adicionar cache
+#todo change part of the configuration from config to session object
+#todo make login with google
+#todo add cache
 
 # Dictionary with the available sensors on the current graph
 dictsensores = {}
@@ -183,7 +183,7 @@ def show_main():
             flash(_('No last hour data to show!'), 'alert-warning')
             lasthour = ""
 
-    #todo permitir caracteres unicode em graph
+    #todo allow unicode characters on graph
     return render_template('show_main.html', graph = Markup(graph), lasthour = Markup(lasthour))
 
 @app.route('/uploads/<path:filename>')
@@ -301,7 +301,7 @@ def allsensors():
 
 @app.route('/sensorstoshow', methods=['GET', 'POST'])
 def sensorstoshow():
-    #todo colocar filtro de sensores a funcionar, com multiplos sensores
+    #todo make filter work with multiple sensors
     if request.method == 'POST':
         app.config['SENSORESAVER'] = []
         app.config['SENSORESAVER'].append(request.form['sensores'])
@@ -372,15 +372,18 @@ def saveeditdatabase(id):
         sensport = request.form['port']
         sensactive = request.form['active']
 
-        db = get_db()
-        curs = db.cursor()
-        try:
-            query = "UPDATE sensors SET id='{0}', name='{1}', baudrate='{2}', porta='{3}', active='{4}' where id='{5}';".\
-                format(sensid, sensname, sensbaud, sensport, sensactive, id)
-            curs.execute(query)
-            db.commit()
-        except sqlite3.OperationalError as e:
-            flash(e.message, 'alert-info')
+        if id not in ['AA', 'WU', 'WA', '--']:
+            db = get_db()
+            curs = db.cursor()
+            try:
+                query = "UPDATE sensors SET id='{0}', name='{1}', baudrate='{2}', porta='{3}', active='{4}' where id='{5}';".\
+                    format(sensid, sensname, sensbaud, sensport, sensactive, id)
+                curs.execute(query)
+                db.commit()
+            except sqlite3.OperationalError as e:
+                flash(e.message, 'alert-info')
+        else:
+            flash(_('First sensors of the database are not editable.'), 'alert-warning')
 
     return redirect(url_for('editdatabase'))
 
@@ -414,14 +417,17 @@ def savenewdatabase():
 @app.route('/editdatabase/delete/<string:id>')
 @login_required
 def editdatabase_delete(id):
-    try:
-        db = get_db()
-        curs = db.cursor()
-        query = "delete from sensors where id='{0}';".format(id)
-        curs.execute(query)
-        db.commit()
-    except sqlite3.OperationalError as e:
-        flash(e.message, 'alert-info')
+    if id not in ['AA', 'WU', 'WA', '--']:
+        try:
+            db = get_db()
+            curs = db.cursor()
+            query = "delete from sensors where id='{0}';".format(id)
+            curs.execute(query)
+            db.commit()
+        except sqlite3.OperationalError as e:
+            flash(e.message, 'alert-info')
+    else:
+        flash(_('First sensors of the database are not editable.'), 'alert-warning')
 
     return redirect(url_for('editdatabase'))
 
