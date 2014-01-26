@@ -372,15 +372,18 @@ def saveeditdatabase(id):
         sensport = request.form['port']
         sensactive = request.form['active']
 
-        db = get_db()
-        curs = db.cursor()
-        try:
-            query = "UPDATE sensors SET id='{0}', name='{1}', baudrate='{2}', porta='{3}', active='{4}' where id='{5}';".\
-                format(sensid, sensname, sensbaud, sensport, sensactive, id)
-            curs.execute(query)
-            db.commit()
-        except sqlite3.OperationalError as e:
-            flash(e.message, 'alert-info')
+        if id not in ['AA', 'WU', 'WA', '--']:
+            db = get_db()
+            curs = db.cursor()
+            try:
+                query = "UPDATE sensors SET id='{0}', name='{1}', baudrate='{2}', porta='{3}', active='{4}' where id='{5}';".\
+                    format(sensid, sensname, sensbaud, sensport, sensactive, id)
+                curs.execute(query)
+                db.commit()
+            except sqlite3.OperationalError as e:
+                flash(e.message, 'alert-info')
+        else:
+            flash(_('First sensors of the database are not editable.'), 'alert-warning')
 
     return redirect(url_for('editdatabase'))
 
@@ -414,14 +417,17 @@ def savenewdatabase():
 @app.route('/editdatabase/delete/<string:id>')
 @login_required
 def editdatabase_delete(id):
-    try:
-        db = get_db()
-        curs = db.cursor()
-        query = "delete from sensors where id='{0}';".format(id)
-        curs.execute(query)
-        db.commit()
-    except sqlite3.OperationalError as e:
-        flash(e.message, 'alert-info')
+    if id not in ['AA', 'WU', 'WA', '--']:
+        try:
+            db = get_db()
+            curs = db.cursor()
+            query = "delete from sensors where id='{0}';".format(id)
+            curs.execute(query)
+            db.commit()
+        except sqlite3.OperationalError as e:
+            flash(e.message, 'alert-info')
+    else:
+        flash(_('First sensors of the database are not editable.'), 'alert-warning')
 
     return redirect(url_for('editdatabase'))
 
