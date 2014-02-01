@@ -31,7 +31,7 @@ app.config.update(dict(
     SUBFOLDER = '',
     SERVER_NAME = '',
     ONDISK = '',
-    APPVERSION = '0.66',
+    APPVERSION = '0.68',
     ULTIMODIA = True,
     PORDATAS = False,
     PERIODO = '24',
