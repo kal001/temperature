@@ -15,6 +15,7 @@ import xlwt
 #todo change part of the configuration from config to session object
 #todo make login with google
 #todo add cache
+#todo do not halt with error, when a sensor is not in the database
 
 # Dictionary with the available sensors on the current graph
 dictsensores = {}
