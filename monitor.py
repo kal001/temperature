@@ -12,7 +12,6 @@ import requests
 
 #Sqlite Database where to store readings
 dbname='/var/www/templog.db'
-#dbname='/users/fernandolourenco/Dados/Projectos/Raspberry Pi/Projectos/Pbx/Temperatura/templog.db'
 
 #Serial devices
 DEVICE = '/dev/ttyAMA0'
