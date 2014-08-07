@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-01-26 23:12+0000\n"
-"PO-Revision-Date: 2014-01-26 23:14-0000\n"
+"POT-Creation-Date: 2014-08-07 22:40+0100\n"
+"PO-Revision-Date: 2014-08-07 22:41-0000\n"
 "Last-Translator: Fernando Jose Lourenco <fernando.lourenco@lourenco.eu>\n"
 "Language-Team: pt <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -17,68 +17,68 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
 "Language: pt\n"
-"X-Generator: Poedit 1.6.3\n"
+"X-Generator: Poedit 1.6.7\n"
 
-#: index.py:143
+#: index.py:146
 msgid "No data to show! Please change Filter options on the above menu."
 msgstr ""
 "Sem dados para mostrar! Por favor alterar opcoes de Filtrar no menu acima."
 
-#: index.py:162
+#: index.py:165
 msgid "Date/Hour"
 msgstr "Data/Hora"
 
-#: index.py:165 index.py:201 index.py:551
+#: index.py:168 index.py:204 index.py:559
 msgid "Temperature"
 msgstr "Temperatura"
 
-#: index.py:168 index.py:202
+#: index.py:171 index.py:205
 msgid "Sensor"
 msgstr "Sensor"
 
-#: index.py:183
+#: index.py:186
 msgid "No last hour data to show!"
 msgstr "Não ha dados da ultima hora para mostrar!"
 
-#: index.py:200
+#: index.py:203
 msgid "DateTime stamp"
 msgstr "Data e Hora"
 
-#: index.py:226
+#: index.py:229
 msgid "This is a program to show temperature logs. Version: {0}"
 msgstr "Programa para mostrar registos de temperatura. Versao: {0}"
 
-#: index.py:246 index.py:289 index.py:327 templates/layout.html:85
+#: index.py:249 index.py:292 index.py:330 templates/layout.html:85
 msgid "Show"
 msgstr "Mostrar"
 
-#: index.py:276
+#: index.py:279
 msgid "last 6 hours"
 msgstr "ultimas 6 horas"
 
-#: index.py:280
+#: index.py:283
 msgid "last 12 hours"
 msgstr "ultimas 12 horas"
 
-#: index.py:284
+#: index.py:287
 msgid "last 24 hours"
 msgstr "ultimas 24 horas"
 
-#: index.py:386 index.py:430
+#: index.py:389 index.py:433
 msgid "First sensors of the database are not editable."
 msgstr "Os primeiros sensores da Base de Dados nao sao editaveis."
 
-#: index.py:413
+#: index.py:416
 msgid "Invalid sensor id"
 msgstr "Invalido sensor id"
 
-#: index.py:593
+#: index.py:608
 msgid "Temperature (C)"
 msgstr "Temperatura (C)"
 
-#: index.py:593
-msgid "(day) Hour"
-msgstr "(dia) Hora"
+#: index.py:608
+msgid "(day) Hour - in local time"
+msgstr "(dia) Hora - no fuso horário local"
 
 #: templates/layout.html:45
 msgid "Ambient Temperature"
@@ -218,3 +218,6 @@ msgstr "Dados da ultima hora (todos os sensores)"
 
 #~ msgid "Configure"
 #~ msgstr "Configurar"
+
+#~ msgid "(day) Hour"
+#~ msgstr "(dia) Hora - fuso horario local"

@@ -14,6 +14,7 @@ import xlwt
 
 
 
+
 #todo change part of the configuration from config to session object
 #todo make login with google
 #todo add cache
@@ -605,7 +606,7 @@ def print_graph_script(records, minimo, maximo, sens):
         var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
         chart.draw(data, options);
       }
-    </script>""" % (_('Temperature (C)'), int(maximo) + 1, int(minimo), int(maximo) + 1 - int(minimo) + 1, _('(day) Hour'))
+    </script>""" % (_('Temperature (C)'), int(maximo) + 1, int(minimo), int(maximo) + 1 - int(minimo) + 1, _('(day) Hour - in local time'))
 
     return chart_code
 
