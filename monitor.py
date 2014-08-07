@@ -8,6 +8,7 @@ import serial
 import requests
 
 
+
 # global variables
 
 #Sqlite Database where to store readings
@@ -35,7 +36,7 @@ def log_temperature(temp):
     conn=sqlite3.connect(dbname)
     curs=conn.cursor()
 
-    curs.execute("INSERT INTO temps values(datetime('now'), '{0}', '{1}' )".format(temp['temperature'],temp['id']))
+    curs.execute("INSERT INTO temps values(datetime('now','localtime'), '{0}', '{1}' )".format(temp['temperature'],temp['id']))
 
     # commit the changes
     conn.commit()

@@ -2,6 +2,7 @@
 
 from sqlite3 import dbapi2 as sqlite3
 from time import strftime
+from datetime import datetime
 import os
 from functools import wraps
 
@@ -9,6 +10,7 @@ from flask import Flask, Markup, request, redirect, url_for, \
     render_template, flash, send_from_directory, abort, g, session
 from flask.ext.babel import Babel, gettext
 import xlwt
+
 
 
 
@@ -546,6 +548,11 @@ def print_graph_script(records, minimo, maximo, sens):
       function drawChart() {
         var data = new google.visualization.DataTable();
         data.addColumn('datetime', 'Data');
+
+        // var local = new Date();
+        // var tzo = local.getTimezoneOffset();
+        // var sign = tzo >= 0 ? '+' : '-';
+        // tzo = sign + ("00"+(tzo/60).toString()).slice(-2) + ("00"+(tzo%60).toString()).slice(-2);
     """
 
     for sensor in sens[:]:
@@ -556,8 +563,15 @@ def print_graph_script(records, minimo, maximo, sens):
     umsominimo = True
     umsomaximo = True
 
+    # Get current timezone offset
+    tzo = int(round((datetime.now() - datetime.utcnow()).total_seconds()))/60
+    sinal = "+"
+    if tzo<0:
+        sinal ="-"
+    tzo = "%s%02d%02d"  % (sinal, tzo/60, tzo%60)
+
     for row in records[:]:
-        rowstr = "data.addRow([new Date('{0}'), ".format(str(row[0]).replace(' ', 'T'))
+        rowstr = "data.addRow([new Date('{0}{1}'), ".format(str(row[0]).replace(' ', 'T'), tzo)
 
         for sensor in sens[:]:
             if str(row[2]) == str(sensor[0]):
