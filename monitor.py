@@ -3,6 +3,7 @@
 import sqlite3
 import threading
 from time import time, sleep, gmtime, strftime
+import urllib2
 
 import serial
 import requests
@@ -10,6 +11,9 @@ import requests
 
 
 # global variables
+
+#remote database page
+remotedb = 'http://www.lourenco.eu/temperature/savedb.php'
 
 #Sqlite Database where to store readings
 dbname='/var/www/templog.db'
@@ -33,15 +37,22 @@ SAMPLE = 10*60
 # store the temperature in the database
 def log_temperature(temp):
 
-    conn=sqlite3.connect(dbname)
-    curs=conn.cursor()
+    try:
+        conn=sqlite3.connect(dbname)
+        curs=conn.cursor()
 
-    curs.execute("INSERT INTO temps values(datetime('now','localtime'), '{0}', '{1}' )".format(temp['temperature'],temp['id']))
+        curs.execute("INSERT INTO temps values(datetime('now','localtime'), '{0}', '{1}' )".format(temp['temperature'],temp['id']))
 
-    # commit the changes
-    conn.commit()
+        # commit the changes
+        conn.commit()
+        conn.close()
 
-    conn.close()
+        # commit also to remote database
+        urllib2.urlopen("{0}?date={1}&temperature={2}&sensor={3}".format(remotedb, strftime("%Y-%m-%dT%H:%M:%S", gmtime()),temp['temperature'],temp['id'] )).read()
+    except Exception as e:
+        text_file = open("debug.txt", "a+")
+        text_file.write("{0} ERROR:\n{1}\n".format(strftime("%Y-%m-%d %H:%M:%S", gmtime()),str(e)))
+        text_file.close()
 
 # get temperature
 # returns -100 on error, or the temperature as a float
