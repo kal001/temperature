@@ -4,6 +4,7 @@ import sqlite3
 import threading
 from time import time, sleep, gmtime, strftime
 import urllib2
+import urllib
 
 import serial
 import requests
@@ -48,7 +49,8 @@ def log_temperature(temp):
         conn.close()
 
         # commit also to remote database
-        urllib2.urlopen("{0}?date={1}&temperature={2}&sensor={3}".format(remotedb, strftime("%Y-%m-%dT%H:%M:%S", gmtime()),temp['temperature'],temp['id'] )).read()
+        datahora = urllib.quote_plus(strftime("%Y-%m-%dT%H:%M:%S%z", gmtime()))
+        urllib2.urlopen("{0}?date={1}&temperature={2}&sensor={3}".format(remotedb, datahora,temp['temperature'],temp['id'] )).read()
     except Exception as e:
         text_file = open("debug.txt", "a+")
         text_file.write("{0} ERROR:\n{1}\n".format(strftime("%Y-%m-%d %H:%M:%S", gmtime()),str(e)))
